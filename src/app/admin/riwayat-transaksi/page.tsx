@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { DateRangePicker } from 'react-date-range'
 import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
@@ -46,7 +46,12 @@ const RiwayatTransaksiPage = () => {
     const startDate = formatDateForApi(selectedRange[0].startDate);
     const endDate = formatDateForApi(selectedRange[0].endDate);
 
-    const { data, isLoading } = useTransactionHistory(startDate, endDate);
+    const { data, isLoading, refetch } = useTransactionHistory(startDate, endDate);
+
+    useEffect(() => {
+        refetch();
+    }, [refetch]);
+
     const transactions = data?.transactions || [];
 
     const formatDate = (date: Date) => {

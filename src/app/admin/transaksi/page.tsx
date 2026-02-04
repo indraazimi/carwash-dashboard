@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import { useTransactions, useUpdateTransactionStatus } from "@/hooks/useTransactions";
 import TransactionSkeleton from "@/components/skeleton/TableSkeleton";
@@ -30,7 +30,12 @@ const TransactionPage = () => {
   };
 
   const selectedDate = filterType === "tomorrow" ? getTomorrowDate() : "";
-  const { data, isLoading } = useTransactions(selectedDate);
+  const { data, isLoading, refetch } = useTransactions(selectedDate);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   const updateStatusMutation = useUpdateTransactionStatus();
 
   const transactions = data?.transactions || [];
