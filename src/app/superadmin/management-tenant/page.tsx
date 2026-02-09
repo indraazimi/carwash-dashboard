@@ -71,11 +71,11 @@ const ManagementTenantPage = () => {
 
         await createLocationMutation.mutateAsync(data);
         showToast("Berhasil menambahkan tenant baru", "success");
-        setIsModalOpen(false);
       } catch (error: any) {
         const message = error.response?.data?.message || "Gagal menambahkan tenant";
         showToast(message, "error");
         console.error("Failed to create tenant:", error);
+        throw error;
       }
     } else {
       if (formData.id) {
@@ -97,11 +97,11 @@ const ManagementTenantPage = () => {
             data: data,
           });
           showToast("Berhasil memperbarui data tenant", "success");
-          setIsModalOpen(false);
         } catch (error: any) {
           const message = error.response?.data?.message || "Gagal memperbarui data tenant";
           showToast(message, "error");
           console.error("Failed to update tenant:", error);
+          throw error;
         }
       }
     }

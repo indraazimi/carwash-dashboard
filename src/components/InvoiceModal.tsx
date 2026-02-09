@@ -128,10 +128,10 @@ const InvoiceModal = ({ isOpen, onClose, transactions }: InvoiceModalProps) => {
 
                         {/* Summary */}
                         <div className="flex flex-col items-end gap-2">
-                            <div className="grid grid-cols-2 gap-x-12 min-w-[300px] border-t border-b border-gray-300 pt-4 pb-4">
+                            {/* <div className="grid grid-cols-2 gap-x-12 min-w-[300px] border-t border-b border-gray-300 pt-4 pb-4">
                                 <span className="text-gray-500 text-sm">Subtotal:</span>
                                 <span className="text-gray-500 text-right">Rp {subtotal.toLocaleString('id-ID')}</span>
-                            </div>
+                            </div> */}
                             <div className="grid grid-cols-2 gap-x-12 min-w-[300px] pt-2">
                                 <span className="text-gray-900 font-bold">Total:</span>
                                 <span className="text-right text-gray-900 text-xl font-bold">Rp {total.toLocaleString('id-ID')}</span>

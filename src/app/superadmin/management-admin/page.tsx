@@ -70,11 +70,11 @@ const ManagementAdminPage = () => {
 
         await createAdminMutation.mutateAsync(createData);
         showToast("Berhasil menambahkan admin baru", "success");
-        setIsModalOpen(false);
       } catch (error: any) {
         const message = error.response?.data?.message || "Gagal menambahkan admin";
         showToast(message, "error");
         console.error("Failed to create admin:", error);
+        throw error;
       }
     } else {
       if (formData.id) {
@@ -97,11 +97,11 @@ const ManagementAdminPage = () => {
             data: updateData,
           });
           showToast("Berhasil memperbarui data admin", "success");
-          setIsModalOpen(false);
         } catch (error: any) {
           const message = error.response?.data?.message || "Gagal memperbarui data admin";
           showToast(message, "error");
           console.error("Failed to update admin:", error);
+          throw error;
         }
       }
     }

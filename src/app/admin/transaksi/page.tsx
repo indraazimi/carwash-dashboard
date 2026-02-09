@@ -126,7 +126,11 @@ const TransactionPage = () => {
                 <div className="p-4 w-44 flex justify-center">
                   <button
                     onClick={() => handleOpenStatusModal(transaction)}
-                    className="p-2 flex  items-center gap-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm font-medium cursor-pointer"
+                    disabled={transaction.status === "SELESAI"}
+                    className={`p-2 flex items-center gap-2 rounded-lg transition-colors text-sm font-medium ${transaction.status === "SELESAI"
+                      ? "bg-gray-400 text-gray-200"
+                      : "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
+                      }`}
                   >
                     <IconEdit size={16} /> Update Status
                   </button>
