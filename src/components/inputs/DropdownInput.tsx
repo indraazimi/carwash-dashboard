@@ -7,10 +7,11 @@ type DropdownInputProps = {
     onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
     isRed: boolean,
     required: boolean,
-    data: any[]
+    data: any[],
+    disabled?: boolean
 }
 
-const DropdownInput = ({ id, label, value, onChange, isRed, required, data }: DropdownInputProps) => {
+const DropdownInput = ({ id, label, value, onChange, isRed, required, data, disabled }: DropdownInputProps) => {
     return (
         <div>
             <label
@@ -24,8 +25,9 @@ const DropdownInput = ({ id, label, value, onChange, isRed, required, data }: Dr
                 name={id}
                 value={value}
                 onChange={onChange}
-                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 ${isRed ? 'focus:ring-cranberry-300' : 'focus:ring-blue-300'} focus:border-transparent transition-all bg-white`}
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 ${isRed ? 'focus:ring-cranberry-300' : 'focus:ring-blue-300'} focus:border-transparent transition-all ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-75' : 'bg-white'}`}
                 required={required}
+                disabled={disabled}
             >
                 <option value="">Pilih {label}</option>
                 {data.map((item) => (

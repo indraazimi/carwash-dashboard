@@ -1,5 +1,6 @@
 "use client";
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
+import { transactionService } from '@/services/transactionService'
 import TextInput from '@/components/inputs/TextInput'
 import DropdownInput from '@/components/inputs/DropdownInput'
 import ButtonComponent from '@/components/buttons/ButtonComponent'
@@ -21,6 +22,43 @@ const TransaksiManualPage = () => {
         jenisKendaraan: "",
         jenisLayanan: ""
     })
+    const [recommendations, setRecommendations] = useState<any[]>([])
+    const [isUserFound, setIsUserFound] = useState(false)
+    const [isVehicleFromRecommendation, setIsVehicleFromRecommendation] = useState(false)
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            if (formData.noHp.length >= 10) {
+                try {
+                    const res = await transactionService.getUserByPhone(formData.noHp)
+                    if (res.status === "success") {
+                        setFormData(prev => ({
+                            ...prev,
+                            namaCustomer: res.data.name
+                        }))
+                        setRecommendations(res.data.vehicles)
+                        setIsUserFound(true)
+                    } else {
+                        setIsUserFound(false)
+                        setRecommendations([])
+                    }
+                } catch (error) {
+                    setIsUserFound(false)
+                    setRecommendations([])
+                }
+            } else {
+                setIsUserFound(false)
+                setRecommendations([])
+            }
+            setIsVehicleFromRecommendation(false)
+        }
+
+        const timer = setTimeout(() => {
+            fetchUser()
+        }, 500)
+
+        return () => clearTimeout(timer)
+    }, [formData.noHp])
 
     // Filtered services specifically for the dropdown based on selected vehicle type
     const { data: filteredServices } = useServices(
@@ -38,6 +76,9 @@ const TransaksiManualPage = () => {
             // Reset service selection if vehicle type changes
             ...(name === 'jenisKendaraan' ? { jenisLayanan: "" } : {})
         }))
+        if (name === 'platNomor' || name === 'jenisKendaraan') {
+            setIsVehicleFromRecommendation(false)
+        }
     }
 
     const selectedLayanan = useMemo(() => {
@@ -67,6 +108,9 @@ const TransaksiManualPage = () => {
                 jenisKendaraan: "",
                 jenisLayanan: ""
             });
+            setIsUserFound(false);
+            setRecommendations([]);
+            setIsVehicleFromRecommendation(false);
         } catch (error: any) {
             console.error("Submit error:", error);
             showToast(error.response?.data?.message || "Gagal membuat transaksi", "error");
@@ -98,14 +142,6 @@ const TransaksiManualPage = () => {
                     <h3 className='font-semibold text-lg'>Informasi Transaksi</h3>
                     <form onSubmit={handleSubmit} className='mt-6 space-y-4'>
                         <TextInput
-                            id="namaCustomer"
-                            label="Nama Customer"
-                            value={formData.namaCustomer}
-                            onChange={handleChange}
-                            isRed={false}
-                            required={true}
-                        />
-                        <TextInput
                             id="noHp"
                             label="Nomor Handphone"
                             value={formData.noHp}
@@ -114,13 +150,46 @@ const TransaksiManualPage = () => {
                             required={true}
                         />
                         <TextInput
-                            id="platNomor"
-                            label="Plat Nomor"
-                            value={formData.platNomor}
+                            id="namaCustomer"
+                            label="Nama Customer"
+                            value={formData.namaCustomer}
                             onChange={handleChange}
                             isRed={false}
                             required={true}
+                            disabled={isUserFound}
                         />
+                        <div className="space-y-2">
+                            <TextInput
+                                id="platNomor"
+                                label="Plat Nomor"
+                                value={formData.platNomor}
+                                onChange={handleChange}
+                                isRed={false}
+                                required={true}
+                            />
+                            {recommendations.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                    {recommendations.map((v) => (
+                                        <button
+                                            key={v.id}
+                                            type="button"
+                                            onClick={() => {
+                                                setFormData(prev => ({
+                                                    ...prev,
+                                                    platNomor: v.plate,
+                                                    jenisKendaraan: v.type.toLowerCase(),
+                                                    jenisLayanan: ""
+                                                }))
+                                                setIsVehicleFromRecommendation(true)
+                                            }}
+                                            className="text-sm font-medium text-gray-500 px-2 py-1 rounded-md border border-gray-300 hover:bg-gray-100 transition-colors cursor-pointer"
+                                        >
+                                            {v.plate} ({v.model})
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                         <DropdownInput
                             id="jenisKendaraan"
                             label="Jenis Kendaraan"
@@ -129,6 +198,7 @@ const TransaksiManualPage = () => {
                             isRed={false}
                             required={true}
                             data={dataJenisKendaraan}
+                            disabled={isVehicleFromRecommendation}
                         />
                         <DropdownInput
                             id="jenisLayanan"

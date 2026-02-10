@@ -6,10 +6,11 @@ type TextInputProps = {
     value?: string,
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
     isRed: boolean,
-    required: boolean
+    required: boolean,
+    disabled?: boolean
 }
 
-const TextInput = ({ id, label, value, onChange, isRed, required }: TextInputProps) => {
+const TextInput = ({ id, label, value, onChange, isRed, required, disabled }: TextInputProps) => {
     return (
         <div>
             <label
@@ -25,8 +26,9 @@ const TextInput = ({ id, label, value, onChange, isRed, required }: TextInputPro
                 onChange={onChange}
                 name={id}
                 placeholder={`Masukkan ${label}`}
-                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 ${isRed ? 'focus:ring-cranberry-300' : 'focus:ring-blue-300'} focus:border-transparent transition-all placeholder:text-gray-400`}
+                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 ${isRed ? 'focus:ring-cranberry-300' : 'focus:ring-blue-300'} focus:border-transparent transition-all placeholder:text-gray-400 ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}`}
                 required={required}
+                disabled={disabled}
             />
         </div>
     )

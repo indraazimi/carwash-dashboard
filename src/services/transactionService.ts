@@ -22,6 +22,12 @@ export const transactionService = {
         });
         return response.data;
     },
+    getUserByPhone: async (phone: string): Promise<any> => {
+        const response = await apiClient.get('/transactions/user-by-phone', {
+            params: { phone }
+        });
+        return response.data;
+    },
     downloadInvoice: async (bookingIds: number[]): Promise<Blob> => {
         const response = await apiClient.post('/invoices', { bookingIds }, {
             responseType: 'blob'
