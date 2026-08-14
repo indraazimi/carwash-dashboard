@@ -11,6 +11,7 @@ export interface User {
     role: 'ADMIN' | 'CUSTOMER' | 'SUPERADMIN';
     photoUrl: string;
     phone?: string;
+    locationId?: number | null;
 }
 
 export interface LoginResponse {

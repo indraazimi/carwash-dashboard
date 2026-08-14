@@ -38,6 +38,7 @@ export interface CreateTransactionRequest {
     plate: string;
     vehicleType: string;
     serviceId: number;
+    bookingTime?: string;
 }
 
 export interface TransactionHistory {

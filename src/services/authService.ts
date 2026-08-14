@@ -18,6 +18,9 @@ export const authService = {
             // Simpan ke localStorage
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
+            if (user.locationId !== undefined && user.locationId !== null) {
+                localStorage.setItem('locationId', user.locationId.toString());
+            }
 
             // Simpan ke cookies untuk middleware (encode untuk handle special characters)
             document.cookie = `token=${token}; path=/; max-age=${60 * 60 * 24 * 7}`; // 7 hari
@@ -42,6 +45,7 @@ export const authService = {
             // Hapus dari localStorage
             localStorage.removeItem('token');
             localStorage.removeItem('user');
+            localStorage.removeItem('locationId');
 
             // Hapus cookies
             document.cookie = 'token=; path=/; max-age=0';
@@ -64,6 +68,9 @@ export const authService = {
             // Simpan ke localStorage
             localStorage.setItem('token', token);
             localStorage.setItem('user', JSON.stringify(user));
+            if (user.locationId !== undefined && user.locationId !== null) {
+                localStorage.setItem('locationId', user.locationId.toString());
+            }
 
             // Simpan ke cookies dengan max-age 30 hari (sesuai token refresh)
             document.cookie = `token=${token}; path=/; max-age=${60 * 60 * 24 * 30}`; // 30 hari
@@ -79,6 +86,9 @@ export const authService = {
     setStoredToken: (token: string, user: any) => {
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
+        if (user?.locationId !== undefined && user?.locationId !== null) {
+            localStorage.setItem('locationId', user.locationId.toString());
+        }
 
         // Update cookies
         document.cookie = `token=${token}; path=/; max-age=${60 * 60 * 24 * 30}`;
@@ -98,6 +108,13 @@ export const authService = {
     getUser: () => {
         const userStr = localStorage.getItem('user');
         return userStr ? JSON.parse(userStr) : null;
+    },
+
+    /**
+     * Mendapatkan locationId dari localStorage
+     */
+    getLocationId: (): string | null => {
+        return localStorage.getItem('locationId');
     },
 
     /**

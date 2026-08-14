@@ -1,8 +1,8 @@
 import apiClient from '@/api/apiClient';
-import { ServiceResponse } from '@/types/service';
+import { SlotAvailabilityResponse } from '@/types/slot';
 
-export const serviceService = {
-    getServices: async (type?: string, locationId?: number | string, cc?: number | string): Promise<ServiceResponse> => {
+export const slotService = {
+    getSlotAvailability: async (date: string, locationId?: number | string): Promise<SlotAvailabilityResponse> => {
         let locId = locationId;
 
         if (locId === undefined && typeof window !== 'undefined') {
@@ -26,12 +26,12 @@ export const serviceService = {
             }
         }
 
-        const params: Record<string, any> = {};
-        if (type) params.type = type;
-        if (locId !== undefined && locId !== null) params.locationId = locId;
-        if (cc !== undefined && cc !== null && cc !== '') params.cc = cc;
+        const params: Record<string, any> = { date };
+        if (locId !== undefined && locId !== null) {
+            params.locationId = locId;
+        }
 
-        const response = await apiClient.get<ServiceResponse>('/services', {
+        const response = await apiClient.get<SlotAvailabilityResponse>('/slots/availability', {
             params
         });
         return response.data;

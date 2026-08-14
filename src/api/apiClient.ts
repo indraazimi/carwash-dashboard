@@ -92,6 +92,9 @@ apiClient.interceptors.response.use(
                 // Simpan token baru
                 localStorage.setItem('token', token);
                 localStorage.setItem('user', JSON.stringify(user));
+                if (user?.locationId !== undefined && user?.locationId !== null) {
+                    localStorage.setItem('locationId', user.locationId.toString());
+                }
 
                 // Verifikasi storage
                 // console.log('Stored Token:', localStorage.getItem('token'));
@@ -117,6 +120,7 @@ apiClient.interceptors.response.use(
                 // Redirect ke login jika refresh gagal
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
+                localStorage.removeItem('locationId');
                 document.cookie = 'token=; path=/; max-age=0';
                 document.cookie = 'user=; path=/; max-age=0';
                 window.location.href = '/login';

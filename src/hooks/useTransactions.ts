@@ -30,6 +30,7 @@ export const useCreateTransaction = () => {
             transactionService.createTransaction(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['transactions'] });
+            queryClient.invalidateQueries({ queryKey: ['slotAvailability'] });
         },
     });
 };
