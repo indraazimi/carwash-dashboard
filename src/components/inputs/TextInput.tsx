@@ -18,6 +18,7 @@ const TextInput = ({ id, label, value, onChange, isRed, required, disabled }: Te
                 className="block text-sm font-semibold text-gray-900 mb-2"
             >
                 {label}
+                {required && <span className="text-red-500 ml-1">*</span>}
             </label>
             <input
                 type="text"
