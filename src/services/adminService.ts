@@ -2,8 +2,12 @@ import apiClient from "@/api/apiClient";
 import { AdminManagementResponse, UpdateAdminRequest } from "@/types/admin";
 
 export const adminService = {
-    getAdmins: async (): Promise<AdminManagementResponse> => {
-        const response = await apiClient.get<AdminManagementResponse>("/admins");
+    getAdmins: async (page?: number, limit?: number): Promise<AdminManagementResponse> => {
+        const params: any = {};
+        if (page) params.page = page;
+        if (limit) params.limit = limit;
+
+        const response = await apiClient.get<AdminManagementResponse>("/admins", { params });
         return response.data;
     },
     updateAdmin: async (id: number, data: UpdateAdminRequest): Promise<any> => {

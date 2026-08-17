@@ -15,11 +15,10 @@ import {
 
 import { useSuperadminLocations, useUpdateLocation, useCreateLocation, useDeleteLocation } from "@/hooks/useLocations";
 import { Location } from "@/types/location";
-import ManagementSkeleton from "@/components/skeleton/ManagementSkeleton";
 import ButtonComponent from "@/components/buttons/ButtonComponent";
 import Toast from "@/components/Toast";
-import ErrorView from "@/components/ErrorView";
 import { useToast } from "@/hooks/useToast";
+import ErrorView from "@/components/ErrorView";
 
 const ManagementTenantPage = () => {
   const { data, isLoading, isError, refetch } = useSuperadminLocations();
@@ -147,11 +146,10 @@ const ManagementTenantPage = () => {
       render: (item) => (
         <div className="flex justify-center">
           <span
-            className={`px-3 py-1 rounded-full text-xs font-semibold ${
-              item.isActive
-                ? "bg-green-100 text-green-500 border border-green-500"
-                : "bg-red-100 text-red-500 border border-red-500"
-            }`}
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${item.isActive
+              ? "bg-green-100 text-green-500 border border-green-500"
+              : "bg-red-100 text-red-500 border border-red-500"
+              }`}
           >
             {item.isActive ? "Aktif" : "Tidak Aktif"}
           </span>
@@ -189,13 +187,9 @@ const ManagementTenantPage = () => {
     },
   ];
 
-  if (isLoading) {
-    return <ManagementSkeleton />;
-  }
-
-  if (isError) {
-    return <ErrorView onRetry={() => refetch()} />;
-  }
+  // if (isError) {
+  //   return <ErrorView onRetry={() => refetch()} />;
+  // }
 
   const locations = data?.locations || [];
 
@@ -219,30 +213,40 @@ const ManagementTenantPage = () => {
           amount={data?.totalLocation || 0}
           isChange={false}
           icon={<IconBuildingStore />}
+          isLoading={isLoading}
+          isError={isError}
         />
         <StatsCard
           label="Tenant Aktif"
           amount={data?.totalActiveLocation || 0}
           isChange={false}
           icon={<IconCheck />}
+          isLoading={isLoading}
+          isError={isError}
         />
         <StatsCard
           label="Total Admin"
           amount={data?.totalAdmin || 0}
           isChange={false}
           icon={<IconUsers />}
+          isLoading={isLoading}
+          isError={isError}
         />
         <StatsCard
           label="Tenant Baru (Bulan ini)"
           amount={data?.totalNewTenantsThisMonth || 0}
           isChange={false}
           icon={<IconPlus />}
+          isLoading={isLoading}
+          isError={isError}
         />
       </div>
 
       <TableComponent
         columns={columns}
         data={locations}
+        isLoading={isLoading}
+        isError={isError}
         emptyMessage="Belum ada data tenant."
         keyExtractor={(item) => item.id}
       />

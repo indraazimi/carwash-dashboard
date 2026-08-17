@@ -21,11 +21,12 @@ import Toast from "@/components/Toast";
 import ErrorView from "@/components/ErrorView";
 import { Admin } from "@/types/admin";
 import { formatDateTime } from "@/utils/getDate";
-import ManagementSkeleton from "@/components/skeleton/ManagementSkeleton";
 import ButtonComponent from "@/components/buttons/ButtonComponent";
 
 const ManagementAdminPage = () => {
-  const { data, isLoading, isError, refetch } = useAdmins();
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+  const { data: response, isLoading, isError, refetch } = useAdmins(page, pageSize);
   const { data: tenantData } = useSuperadminLocations();
   const updateAdminMutation = useUpdateAdmin();
   const createAdminMutation = useCreateAdmin();
@@ -198,15 +199,13 @@ const ManagementAdminPage = () => {
     },
   ];
 
-  if (isLoading) {
-    return <ManagementSkeleton />;
-  }
-
   if (isError) {
     return <ErrorView onRetry={() => refetch()} />;
   }
 
-  const admins = data?.admins || [];
+  const stats = response?.data;
+  const admins = response?.data?.admins || [];
+  const pagination = response?.pagination;
   const tenants = tenantData?.locations.map(loc => ({
     id: loc.id.toString(),
     name: loc.name
@@ -229,35 +228,50 @@ const ManagementAdminPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatsCard
           label="Total Admin"
-          amount={data?.totalAdmin || 0}
+          amount={stats?.totalAdmin || 0}
           isChange={false}
           icon={<IconUsers />}
+          isLoading={isLoading}
+          isError={isError}
         />
         <StatsCard
           label="Admin Aktif"
-          amount={data?.activeAdmin || 0}
+          amount={stats?.activeAdmin || 0}
           isChange={false}
           icon={<IconCheck />}
+          isLoading={isLoading}
+          isError={isError}
         />
         <StatsCard
           label="Admin Tidak Aktif"
-          amount={data?.inactiveAdmin || 0}
+          amount={stats?.inactiveAdmin || 0}
           isChange={false}
           icon={<IconX />}
+          isLoading={isLoading}
+          isError={isError}
         />
         <StatsCard
           label="Login Hari Ini"
-          amount={data?.loginToday || 0}
+          amount={stats?.loginToday || 0}
           isChange={false}
           icon={<IconLogin />}
+          isLoading={isLoading}
+          isError={isError}
         />
       </div>
 
       <TableComponent
         columns={columns}
         data={admins}
+        isLoading={isLoading}
+        isError={isError}
         emptyMessage="Belum ada data admin."
         keyExtractor={(item) => item.id}
+        pagination={true}
+        pageSize={pagination?.itemsPerPage || pageSize}
+        currentPage={pagination?.currentPage || page}
+        totalItems={pagination?.totalItems}
+        onPageChange={(newPage) => setPage(newPage)}
       />
 
       {/* Admin Modal (Add/Edit) */}

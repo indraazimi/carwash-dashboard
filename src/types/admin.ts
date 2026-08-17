@@ -1,3 +1,5 @@
+import { PaginationInfo } from "./transaction";
+
 export interface Admin {
     id: number;
     name: string;
@@ -22,7 +24,9 @@ export interface AdminManagementResponse {
     status: string;
     message: string;
     data: AdminManagementData;
+    pagination?: PaginationInfo;
 }
+
 export interface UpdateAdminRequest {
     name: string;
     username: string;

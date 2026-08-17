@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import TableComponent, { TableColumn } from '@/components/admin/table/TableComponent';
 import ButtonComponent from '@/components/buttons/ButtonComponent';
-import TableSkeleton from '@/components/skeleton/TableSkeleton';
 import Toast from '@/components/Toast';
 import ServiceModal, { ServiceFormData } from '@/components/ServiceModal';
 import { useToast } from '@/hooks/useToast';
@@ -40,7 +39,7 @@ const formatCurrency = (value: number) => {
 
 const ManajemenLayananPage = () => {
     const { toasts, showToast, removeToast } = useToast();
-    const { data: services = [], isLoading, refetch } = useServices();
+    const { data: services = [], isLoading, isError, refetch } = useServices();
     const createServiceMutation = useCreateService();
     const updateServiceMutation = useUpdateService();
     const deleteServiceMutation = useDeleteService();
@@ -170,8 +169,6 @@ const ManajemenLayananPage = () => {
         },
     ];
 
-    if (isLoading) return <TableSkeleton />;
-
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -187,6 +184,8 @@ const ManajemenLayananPage = () => {
             <TableComponent
                 columns={columns}
                 data={services}
+                isLoading={isLoading}
+                isError={isError}
                 emptyMessage="Tidak ada layanan"
                 keyExtractor={(item) => item.id}
             />

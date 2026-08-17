@@ -2,9 +2,14 @@ import apiClient from '@/api/apiClient';
 import { CreateTransactionRequest, TransactionResponse, TransactionsListResponse, TransactionHistoryResponse } from '@/types/transaction';
 
 export const transactionService = {
-    getTransactions: async (date?: string): Promise<TransactionsListResponse> => {
+    getTransactions: async (date?: string, page?: number, limit?: number): Promise<TransactionsListResponse> => {
+        const params: any = {};
+        if (date) params.date = date;
+        if (page) params.page = page;
+        if (limit) params.limit = limit;
+
         const response = await apiClient.get<TransactionsListResponse>('/transactions', {
-            params: date ? { date } : {}
+            params
         });
         return response.data;
     },
@@ -16,9 +21,15 @@ export const transactionService = {
         const response = await apiClient.post('/transactions', data);
         return response.data;
     },
-    getTransactionHistory: async (startDate?: string, endDate?: string): Promise<TransactionHistoryResponse> => {
+    getTransactionHistory: async (startDate?: string, endDate?: string, page?: number, limit?: number): Promise<TransactionHistoryResponse> => {
+        const params: any = {};
+        if (startDate) params.startDate = startDate;
+        if (endDate) params.endDate = endDate;
+        if (page) params.page = page;
+        if (limit) params.limit = limit;
+
         const response = await apiClient.get<TransactionHistoryResponse>('/transactions/history', {
-            params: { startDate, endDate }
+            params
         });
         return response.data;
     },

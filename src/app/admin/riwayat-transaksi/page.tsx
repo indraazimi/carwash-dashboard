@@ -6,9 +6,8 @@ import 'react-date-range/dist/styles.css'
 import 'react-date-range/dist/theme/default.css'
 import { useTransactionHistory } from '@/hooks/useTransactions'
 import { formatOnlyDate, formatTimeDot } from '@/utils/getDate'
-import TransactionSkeleton from '@/components/skeleton/TableSkeleton'
 import ButtonComponent from '@/components/buttons/ButtonComponent'
-import { IconCalendar, IconCalendarFilled, IconFileText } from '@tabler/icons-react'
+import { IconCalendarFilled, IconFileText } from '@tabler/icons-react'
 import InvoiceModal from '@/components/InvoiceModal'
 import { useToast } from '@/hooks/useToast'
 import Toast from '@/components/Toast'
@@ -33,6 +32,8 @@ const RiwayatTransaksiPage = () => {
             key: 'selection'
         }
     ])
+    const [page, setPage] = useState(1);
+    const pageSize = 10;
     const [showDatePicker, setShowDatePicker] = useState(false)
     const [selectedIds, setSelectedIds] = useState<number[]>([])
     const { toasts, showToast, removeToast } = useToast()
@@ -48,13 +49,14 @@ const RiwayatTransaksiPage = () => {
     const startDate = formatDateForApi(selectedRange[0].startDate);
     const endDate = formatDateForApi(selectedRange[0].endDate);
 
-    const { data, isLoading, refetch } = useTransactionHistory(startDate, endDate);
+    const { data: response, isLoading, isError, refetch } = useTransactionHistory(startDate, endDate, page, pageSize);
 
     useEffect(() => {
         refetch();
     }, [refetch]);
 
-    const transactions = data?.transactions || [];
+    const transactions = response?.data?.transactions || [];
+    const pagination = response?.pagination;
 
     const formatDate = (date: Date) => {
         return date.toLocaleDateString('id-ID', {
@@ -107,6 +109,7 @@ const RiwayatTransaksiPage = () => {
                         checked={selectedIds.includes(transaction.id)}
                         onChange={() => toggleSelection(transaction.id)}
                         className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        disabled={isLoading}
                     />
                 </div>
             )
@@ -182,8 +185,6 @@ const RiwayatTransaksiPage = () => {
         }
     ];
 
-    if (isLoading) return <TransactionSkeleton />;
-
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
@@ -214,7 +215,8 @@ const RiwayatTransaksiPage = () => {
                                                 startDate: item.selection.startDate,
                                                 endDate: item.selection.endDate,
                                                 key: 'selection'
-                                            }])
+                                            }]);
+                                            setPage(1);
                                         }
                                     }}
                                     ranges={selectedRange}
@@ -236,6 +238,7 @@ const RiwayatTransaksiPage = () => {
                             checked={transactions.length > 0 && selectedIds.length === transactions.length}
                             onChange={toggleSelectAll}
                             className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                            disabled={isLoading || transactions.length === 0}
                         />
                     </div>
                     <div className='p-4 flex items-center justify-between w-full'>
@@ -249,6 +252,7 @@ const RiwayatTransaksiPage = () => {
                             onClick={handleCreateInvoice}
                             isRed={false}
                             label="Buat Invoice"
+                            disabled={isLoading || selectedIds.length === 0}
                         />
                     </div>
                 </div>
@@ -256,9 +260,16 @@ const RiwayatTransaksiPage = () => {
                 <TableComponent
                     columns={columns}
                     data={transactions}
+                    isLoading={isLoading}
+                    isError={isError}
                     minWidth="min-w-[1100px]"
                     emptyMessage="Tidak ada riwayat transaksi pada periode ini"
                     keyExtractor={(item) => item.id}
+                    pagination={true}
+                    pageSize={pagination?.itemsPerPage || pageSize}
+                    currentPage={pagination?.currentPage || page}
+                    totalItems={pagination?.totalItems}
+                    onPageChange={(newPage) => setPage(newPage)}
                 />
             </div>
 

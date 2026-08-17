@@ -2,12 +2,12 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { transactionService } from '@/services/transactionService';
 import { CreateTransactionRequest, TransactionResponse } from '@/types/transaction';
 
-export const useTransactions = (date?: string) => {
+export const useTransactions = (date?: string, page?: number, limit?: number) => {
     return useQuery({
-        queryKey: ['transactions', date],
+        queryKey: ['transactions', date, page, limit],
         queryFn: async () => {
-            const response = await transactionService.getTransactions(date);
-            return response.data;
+            const response = await transactionService.getTransactions(date, page, limit);
+            return response;
         },
     });
 };
@@ -35,13 +35,12 @@ export const useCreateTransaction = () => {
     });
 };
 
-export const useTransactionHistory = (startDate?: string, endDate?: string) => {
+export const useTransactionHistory = (startDate?: string, endDate?: string, page?: number, limit?: number) => {
     return useQuery({
-        queryKey: ['transactionHistory', startDate, endDate],
+        queryKey: ['transactionHistory', startDate, endDate, page, limit],
         queryFn: async () => {
-            const response = await transactionService.getTransactionHistory(startDate, endDate);
-            return response.data;
+            const response = await transactionService.getTransactionHistory(startDate, endDate, page, limit);
+            return response;
         },
     });
 };
-

@@ -14,6 +14,13 @@ export interface Transaction {
     paymentMethod: string;
 }
 
+export interface PaginationInfo {
+    currentPage: number;
+    totalPages: number;
+    totalItems: number;
+    itemsPerPage: number;
+}
+
 export interface TransactionResponse {
     status: string;
     message: string;
@@ -31,6 +38,7 @@ export interface TransactionsListResponse {
         date: string;
         transactions: Transaction[];
     };
+    pagination?: PaginationInfo;
 }
 
 export interface CreateTransactionRequest {
@@ -66,4 +74,5 @@ export interface TransactionHistoryResponse {
         };
         transactions: TransactionHistory[];
     };
+    pagination?: PaginationInfo;
 }

@@ -2,12 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminService } from "@/services/adminService";
 import { UpdateAdminRequest } from "@/types/admin";
 
-export const useAdmins = () => {
+export const useAdmins = (page?: number, limit?: number) => {
     return useQuery({
-        queryKey: ["admins"],
+        queryKey: ["admins", page, limit],
         queryFn: async () => {
-            const response = await adminService.getAdmins();
-            return response.data;
+            const response = await adminService.getAdmins(page, limit);
+            return response;
         },
     });
 };

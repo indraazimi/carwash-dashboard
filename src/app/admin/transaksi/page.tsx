@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { IconEdit } from "@tabler/icons-react";
 import { useTransactions, useUpdateTransactionStatus } from "@/hooks/useTransactions";
-import TransactionSkeleton from "@/components/skeleton/TableSkeleton";
 import { formatTime } from "@/utils/getDate";
 import { Transaction } from "@/types/transaction";
 import TransactionStatusModal from "@/components/TransactionStatusModal";
@@ -15,6 +14,8 @@ import ButtonComponent from "@/components/buttons/ButtonComponent";
 const TransactionPage = () => {
   const { toasts, showToast, removeToast } = useToast();
   const [filterType, setFilterType] = useState<"today" | "tomorrow">("today");
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
@@ -32,7 +33,7 @@ const TransactionPage = () => {
   };
 
   const selectedDate = filterType === "tomorrow" ? getTomorrowDate() : "";
-  const { data, isLoading, refetch } = useTransactions(selectedDate);
+  const { data: response, isLoading, isError, refetch } = useTransactions(selectedDate, page, pageSize);
 
   useEffect(() => {
     refetch();
@@ -40,7 +41,13 @@ const TransactionPage = () => {
 
   const updateStatusMutation = useUpdateTransactionStatus();
 
-  const transactions = data?.transactions || [];
+  const transactions = response?.data?.transactions || [];
+  const pagination = response?.pagination;
+
+  const handleFilterChange = (newFilter: "today" | "tomorrow") => {
+    setFilterType(newFilter);
+    setPage(1);
+  };
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("id-ID", {
@@ -146,8 +153,6 @@ const TransactionPage = () => {
     },
   ];
 
-  if (isLoading) return <TransactionSkeleton />;
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -155,7 +160,7 @@ const TransactionPage = () => {
         <div className="flex gap-2">
           <select
             value={filterType}
-            onChange={(e) => setFilterType(e.target.value as "today" | "tomorrow")}
+            onChange={(e) => handleFilterChange(e.target.value as "today" | "tomorrow")}
             className="w-48 p-2 bg-white border border-gray-300 rounded-lg shadow-sm outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-medium text-gray-700"
           >
             <option value="today">Hari Ini</option>
@@ -167,9 +172,16 @@ const TransactionPage = () => {
       <TableComponent
         columns={columns}
         data={transactions}
+        isLoading={isLoading}
+        isError={isError}
         minWidth="min-w-[1300px]"
         emptyMessage="Tidak ada transaksi"
         keyExtractor={(item) => item.bookingNumber}
+        pagination={true}
+        pageSize={pagination?.itemsPerPage || pageSize}
+        currentPage={pagination?.currentPage || page}
+        totalItems={pagination?.totalItems}
+        onPageChange={(newPage) => setPage(newPage)}
       />
 
       {/* Update Status Modal */}
