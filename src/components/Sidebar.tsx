@@ -7,9 +7,15 @@ import {
   IconCategory2,
   IconUserPlus,
   IconBuildingStore,
+  IconX,
 } from "@tabler/icons-react";
 
-const Sidebar = () => {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const Sidebar = ({ isOpen = false, onClose }: SidebarProps) => {
   const pathname = usePathname();
 
   const navItems = [
@@ -31,35 +37,65 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 flex flex-col py-2 px-5 bg-white border-r border-gray-200">
-      <a href="/" className="flex items-center p-2 mb-4 w-fit">
-        <Image src="/tel-u-logo.png" alt="TelU Logo" width={20} height={20} />
-        <span className="ml-2 font-semibold text-xl">Car Wash</span>
-      </a>
-      <nav className="flex-1">
-        <ul>
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+          onClick={onClose}
+        />
+      )}
 
-            return (
-              <li key={item.href} className="mb-2">
-                <Link
-                  href={item.href}
-                  className={`flex items-center p-3 rounded-lg transition-colors duration-200 font-medium ${isActive
-                    ? "bg-cranberry-50 text-cranberry-500 border border-cranberry-500"
-                    : "hover:bg-cranberry-50 hover:text-cranberry-500 text-gray-500"
+      {/* Sidebar Aside */}
+      <aside
+        className={`fixed md:static inset-y-0 left-0 z-50 w-64 flex flex-col py-4 px-5 bg-white border-r border-gray-200 transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0 shadow-2xl md:shadow-none" : "-translate-x-full md:translate-x-0"
+        }`}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <a href="/" className="flex items-center p-2 w-fit">
+            <Image src="/tel-u-logo.png" alt="TelU Logo" width={20} height={20} />
+            <span className="ml-2 font-semibold text-xl">Car Wash</span>
+          </a>
+          {/* Close button on mobile */}
+          <button
+            onClick={onClose}
+            className="p-1 rounded-lg text-gray-500 hover:bg-gray-100 md:hidden cursor-pointer"
+            aria-label="Close sidebar"
+          >
+            <IconX size={20} />
+          </button>
+        </div>
+
+        <nav className="flex-1">
+          <ul>
+            {navItems.map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
+
+              return (
+                <li key={item.href} className="mb-2">
+                  <Link
+                    href={item.href}
+                    onClick={() => {
+                      if (onClose) onClose();
+                    }}
+                    className={`flex items-center p-3 rounded-lg transition-colors duration-200 font-medium ${
+                      isActive
+                        ? "bg-cranberry-50 text-cranberry-500 border border-cranberry-500"
+                        : "hover:bg-cranberry-50 hover:text-cranberry-500 text-gray-500"
                     }`}
-                >
-                  <Icon className="mr-2" size={20} />
-                  {item.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-    </aside>
+                  >
+                    <Icon className="mr-2" size={20} />
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </aside>
+    </>
   );
 };
 

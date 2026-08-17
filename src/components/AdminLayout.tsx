@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AdminSidebar from "@/components/AdminSidebar";
 import { getDate } from "@/utils/getDate";
-import { IconUser, IconLogout, IconChevronDown } from "@tabler/icons-react";
+import { IconUser, IconLogout, IconChevronDown, IconMenu2 } from "@tabler/icons-react";
 import { useLogout } from "@/hooks/useLogout";
 import { authService } from "@/services/authService";
 import { User } from "@/types/auth";
@@ -18,6 +18,7 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { logout, isLoggingOut } = useLogout();
   const [user, setUser] = useState<User | null>(null);
@@ -71,15 +72,27 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Admin Sidebar */}
-      <AdminSidebar />
+      <AdminSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         {/* Header/Navbar */}
-        <header className="bg-white border-b border-gray-200 p-5 flex items-center justify-between">
-          <h1 className="text-base font-semibold">
-            {getDate(new Date().toISOString())}
-          </h1>
+        <header className="bg-white border-b border-gray-200 p-4 sm:p-5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="p-2 -ml-2 rounded-lg text-gray-600 hover:bg-gray-100 md:hidden cursor-pointer"
+              aria-label="Open sidebar"
+            >
+              <IconMenu2 size={24} />
+            </button>
+            <h1 className="text-sm sm:text-base font-semibold">
+              {getDate(new Date().toISOString())}
+            </h1>
+          </div>
 
           {/* Profile Dropdown */}
           <div className="relative" ref={dropdownRef}>
