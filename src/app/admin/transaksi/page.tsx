@@ -9,6 +9,8 @@ import TransactionStatusModal from "@/components/TransactionStatusModal";
 import { useToast } from "@/hooks/useToast";
 import Toast from "@/components/Toast";
 import VehicleStatus from "@/components/vehicle/VehicleStatus";
+import TableComponent, { TableColumn } from "@/components/admin/table/TableComponent";
+import ButtonComponent from "@/components/buttons/ButtonComponent";
 
 const TransactionPage = () => {
   const { toasts, showToast, removeToast } = useToast();
@@ -63,6 +65,84 @@ const TransactionPage = () => {
     }
   };
 
+  const columns: TableColumn<Transaction>[] = [
+    {
+      header: "ID",
+      className: "w-28",
+      render: (transaction) => (
+        <span className="font-medium text-gray-900 uppercase">{transaction.bookingNumber}</span>
+      ),
+    },
+    {
+      header: "KENDARAAN",
+      className: "w-40",
+      render: (transaction) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900 uppercase">{transaction.vehiclePlate}</span>
+          <span className="text-gray-500 text-sm capitalize">{transaction.vehicleType}</span>
+        </div>
+      ),
+    },
+    {
+      header: "CUSTOMER",
+      render: (transaction) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">{transaction.customerName}</span>
+          <span className="text-gray-500 text-sm">{transaction.customerPhone}</span>
+        </div>
+      ),
+    },
+    {
+      header: "LAYANAN",
+      render: (transaction) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">{transaction.serviceName}</span>
+          <span className="text-gray-500 text-sm">{formatCurrency(transaction.servicePrice)}</span>
+        </div>
+      ),
+    },
+    {
+      header: "WAKTU",
+      render: (transaction) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">{formatTime(transaction.bookingTime)}</span>
+          <span className="text-gray-500 text-sm">Estimasi Selesai: {formatTime(transaction.estimateFinish)}</span>
+        </div>
+      ),
+    },
+    {
+      header: "PEMBAYARAN",
+      className: "w-36 text-center",
+      render: (transaction) => (
+        <span className="font-medium text-gray-800">{transaction.paymentMethod || "-"}</span>
+      ),
+    },
+    {
+      header: "STATUS",
+      className: "w-40 text-center",
+      render: (transaction) => (
+        <div className="flex justify-center">
+          <VehicleStatus status={transaction.status} />
+        </div>
+      ),
+    },
+    {
+      header: "AKSI",
+      className: "w-44 text-center",
+      render: (transaction) => (
+        <div className="flex justify-center">
+          <ButtonComponent
+            label="Update Status"
+            icon={<IconEdit size={16} />}
+            isPrimary={true}
+            onClick={() => handleOpenStatusModal(transaction)}
+            disabled={transaction.status === "SELESAI"}
+          />
+        </div>
+      ),
+    },
+  ];
+
   if (isLoading) return <TransactionSkeleton />;
 
   return (
@@ -81,69 +161,12 @@ const TransactionPage = () => {
         </div>
       </div>
 
-      <div className="space-y-2">
-        {/* Table Header */}
-        <div className="flex bg-white rounded-lg shadow-sm font-semibold text-gray-700">
-          <div className="p-4 w-28">ID</div>
-          <div className="p-4 w-40">KENDARAAN</div>
-          <div className="p-4 flex-1">CUSTOMER</div>
-          <div className="p-4 flex-1">LAYANAN</div>
-          <div className="p-4 flex-1">WAKTU</div>
-          <div className="p-4 w-40 text-center">STATUS</div>
-          <div className="p-4 w-44 text-center">AKSI</div>
-        </div>
-
-        {/* Table Rows */}
-        <div className="rounded-lg overflow-hidden shadow-sm">
-          {transactions.length > 0 ? (
-            transactions.map((transaction) => (
-              <div
-                key={transaction.bookingNumber}
-                className="flex items-center bg-white border-t border-gray-200 hover:bg-gray-50 transition-colors"
-              >
-                <div className="p-4 w-28 flex flex-col">
-                  <span className="font-medium text-gray-900 uppercase">{transaction.bookingNumber}</span>
-                </div>
-                <div className="p-4 w-40 flex flex-col">
-                  <span className="font-medium text-gray-900 uppercase">{transaction.vehiclePlate}</span>
-                  <span className="text-gray-500 text-sm capitalize">{transaction.vehicleType}</span>
-                </div>
-                <div className="p-4 flex-1 flex flex-col">
-                  <span className="font-medium text-gray-900">{transaction.customerName}</span>
-                  <span className="text-gray-500 text-sm">{transaction.customerPhone}</span>
-                </div>
-                <div className="p-4 flex-1 flex flex-col">
-                  <span className="font-medium text-gray-900">{transaction.serviceName}</span>
-                  <span className="text-gray-500 text-sm">{formatCurrency(transaction.servicePrice)}</span>
-                </div>
-                <div className="p-4 flex-1 flex flex-col">
-                  <span className="font-medium text-gray-900">{formatTime(transaction.bookingTime)}</span>
-                  <span className="text-gray-500 text-sm">Estimasi Selesai: {formatTime(transaction.estimateFinish)}</span>
-                </div>
-                <div className="p-4 w-40 text-center justify-center flex">
-                  <VehicleStatus status={transaction.status} />
-                </div>
-                <div className="p-4 w-44 flex justify-center">
-                  <button
-                    onClick={() => handleOpenStatusModal(transaction)}
-                    disabled={transaction.status === "SELESAI"}
-                    className={`p-2 flex items-center gap-2 rounded-lg transition-colors text-sm font-medium ${transaction.status === "SELESAI"
-                      ? "bg-gray-400 text-gray-200"
-                      : "bg-blue-500 text-white hover:bg-blue-600 cursor-pointer"
-                      }`}
-                  >
-                    <IconEdit size={16} /> Update Status
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="bg-white p-4 rounded-lg shadow-sm text-center text-gray-500">
-              Tidak ada transaksi
-            </div>
-          )}
-        </div>
-      </div>
+      <TableComponent
+        columns={columns}
+        data={transactions}
+        emptyMessage="Tidak ada transaksi"
+        keyExtractor={(item) => item.bookingNumber}
+      />
 
       {/* Update Status Modal */}
       <TransactionStatusModal

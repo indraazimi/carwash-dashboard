@@ -12,6 +12,8 @@ import { IconCalendar, IconCalendarFilled, IconFileText } from '@tabler/icons-re
 import InvoiceModal from '@/components/InvoiceModal'
 import { useToast } from '@/hooks/useToast'
 import Toast from '@/components/Toast'
+import TableComponent, { TableColumn } from '@/components/admin/table/TableComponent'
+import { TransactionHistory } from '@/types/transaction'
 
 const RiwayatTransaksiPage = () => {
     // Get first and last day of current month
@@ -94,6 +96,89 @@ const RiwayatTransaksiPage = () => {
         setIsInvoiceModalOpen(true)
     }
 
+    const columns: TableColumn<TransactionHistory>[] = [
+        {
+            header: "",
+            className: "w-12 text-center",
+            render: (transaction) => (
+                <div className="flex justify-center">
+                    <input
+                        type="checkbox"
+                        checked={selectedIds.includes(transaction.id)}
+                        onChange={() => toggleSelection(transaction.id)}
+                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    />
+                </div>
+            )
+        },
+        {
+            header: "ID",
+            className: "w-28",
+            render: (transaction) => (
+                <span className="font-medium text-gray-900 uppercase">
+                    {transaction.bookingNumber}
+                </span>
+            )
+        },
+        {
+            header: "TANGGAL & WAKTU",
+            render: (transaction) => (
+                <div className="flex flex-col">
+                    <span className="font-medium text-gray-900">
+                        {formatOnlyDate(transaction.date)}
+                    </span>
+                    <span className="text-gray-500 text-sm">
+                        {formatTimeDot(transaction.date)}
+                    </span>
+                </div>
+            )
+        },
+        {
+            header: "KENDARAAN",
+            className: "w-40",
+            render: (transaction) => (
+                <div className="flex flex-col">
+                    <span className="font-medium text-gray-900 uppercase">
+                        {transaction.vehiclePlate}
+                    </span>
+                    <span className="text-gray-500 text-sm capitalize">
+                        {transaction.vehicleType.toLowerCase()}
+                    </span>
+                </div>
+            )
+        },
+        {
+            header: "CUSTOMER",
+            render: (transaction) => (
+                <div className="flex flex-col">
+                    <span className="font-medium text-gray-900">
+                        {transaction.customerName}
+                    </span>
+                    <span className="text-gray-500 text-sm">
+                        {transaction.customerPhone}
+                    </span>
+                </div>
+            )
+        },
+        {
+            header: "LAYANAN",
+            render: (transaction) => (
+                <span className="font-medium text-gray-900">
+                    {transaction.serviceName}
+                </span>
+            )
+        },
+        {
+            header: "HARGA",
+            className: "w-40",
+            render: (transaction) => (
+                <span className="font-medium">
+                    {formatCurrency(transaction.servicePrice)}
+                </span>
+            )
+        }
+    ];
+
     if (isLoading) return <TransactionSkeleton />;
 
     return (
@@ -157,7 +242,6 @@ const RiwayatTransaksiPage = () => {
                         <ButtonComponent
                             isPrimary={true}
                             isFullWidth={false}
-                            isIconEnable={true}
                             icon={<IconFileText />}
                             onClick={handleCreateInvoice}
                             isRed={false}
@@ -165,87 +249,13 @@ const RiwayatTransaksiPage = () => {
                         />
                     </div>
                 </div>
-                {/* Table Header */}
-                <div className="flex bg-white rounded-lg shadow-sm font-semibold text-gray-700">
-                    <div className="p-4 w-12 flex justify-center">
-                        {/* <input
-                            type="checkbox"
-                            checked={transactions.length > 0 && selectedIds.length === transactions.length}
-                            onChange={toggleSelectAll}
-                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                        /> */}
-                    </div>
-                    <div className="p-4 w-28">ID</div>
-                    <div className="p-4 flex-1">TANGGAL & WAKTU</div>
-                    <div className="p-4 w-40">KENDARAAN</div>
-                    <div className="p-4 flex-1">CUSTOMER</div>
-                    <div className="p-4 flex-1">LAYANAN</div>
-                    <div className="p-4 w-40">HARGA</div>
-                </div>
 
-                {/* Table Rows */}
-                <div className="rounded-lg overflow-hidden shadow-sm">
-                    {transactions.length > 0 ? (
-                        transactions.map((transaction) => (
-                            <div
-                                key={transaction.id}
-                                className="flex items-center bg-white border-t border-gray-200 hover:bg-gray-50 transition-colors"
-                            >
-                                <div className="p-4 w-12 flex justify-center">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedIds.includes(transaction.id)}
-                                        onChange={() => toggleSelection(transaction.id)}
-                                        className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                    />
-                                </div>
-                                <div className="p-4 w-28 flex flex-col">
-                                    <span className="font-medium text-gray-900 uppercase">
-                                        {transaction.bookingNumber}
-                                    </span>
-                                </div>
-                                <div className="p-4 flex-1 flex flex-col">
-                                    <span className="font-medium text-gray-900">
-                                        {formatOnlyDate(transaction.date)}
-                                    </span>
-                                    <span className="text-gray-500 text-sm">
-                                        {formatTimeDot(transaction.date)}
-                                    </span>
-                                </div>
-                                <div className="p-4 w-40 flex flex-col">
-                                    <span className="font-medium text-gray-900 uppercase">
-                                        {transaction.vehiclePlate}
-                                    </span>
-                                    <span className="text-gray-500 text-sm capitalize">
-                                        {transaction.vehicleType.toLowerCase()}
-                                    </span>
-                                </div>
-                                <div className="p-4 flex-1 flex flex-col">
-                                    <span className="font-medium text-gray-900">
-                                        {transaction.customerName}
-                                    </span>
-                                    <span className="text-gray-500 text-sm">
-                                        {transaction.customerPhone}
-                                    </span>
-                                </div>
-                                <div className="p-4 flex-1 flex flex-col">
-                                    <span className="font-medium text-gray-900">
-                                        {transaction.serviceName}
-                                    </span>
-                                </div>
-                                <div className="p-4 w-40 flex flex-col">
-                                    <span className="font-medium">
-                                        {formatCurrency(transaction.servicePrice)}
-                                    </span>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="bg-white p-10 text-center text-gray-500">
-                            Tidak ada riwayat transaksi pada periode ini
-                        </div>
-                    )}
-                </div>
+                <TableComponent
+                    columns={columns}
+                    data={transactions}
+                    emptyMessage="Tidak ada riwayat transaksi pada periode ini"
+                    keyExtractor={(item) => item.id}
+                />
             </div>
 
             <InvoiceModal

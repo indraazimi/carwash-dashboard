@@ -11,6 +11,7 @@ export interface Transaction {
     estimateFinish: string;
     status: string;
     bookingMethod: string;
+    paymentMethod: string;
 }
 
 export interface TransactionResponse {
