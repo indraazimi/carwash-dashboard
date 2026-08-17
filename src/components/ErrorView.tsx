@@ -29,7 +29,6 @@ const ErrorView = ({
                     isFullWidth={false}
                     type="button"
                     icon={<IconRefresh size={20} />}
-                    isIconEnable={true}
                 />
             )}
         </div>

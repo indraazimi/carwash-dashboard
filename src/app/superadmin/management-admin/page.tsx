@@ -145,7 +145,6 @@ const ManagementAdminPage = () => {
           isFullWidth={false}
           type="button"
           icon={<IconPlus size={20} />}
-          isIconEnable={true}
         />
       </div>
 

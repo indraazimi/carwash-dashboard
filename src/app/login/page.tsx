@@ -87,7 +87,6 @@ export default function LoginPage() {
             label={isLoading ? "Memproses..." : "Masuk"}
             isPrimary={true}
             isRed={true}
-            isIconEnable={false}
             isFullWidth={true}
             disabled={isLoading}
           />

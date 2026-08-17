@@ -82,7 +82,6 @@ const InvoiceModal = ({ isOpen, onClose, transactions }: InvoiceModalProps) => {
                             label="Download"
                             onClick={handleDownload}
                             isPrimary={true}
-                            isIconEnable={true}
                             icon={<IconDownload size={20} />}
                         />
                         <button
