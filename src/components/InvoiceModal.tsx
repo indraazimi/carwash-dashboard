@@ -98,8 +98,8 @@ const InvoiceModal = ({ isOpen, onClose, transactions }: InvoiceModalProps) => {
                     <div id="invoice-content" className="bg-white">
 
                         {/* Table */}
-                        <div className="border border-gray-300 overflow-hidden mb-8">
-                            <table className="w-full border-collapse">
+                        <div className="border border-gray-300 overflow-x-auto mb-8 print:overflow-visible">
+                            <table className="w-full border-collapse min-w-[600px] print:min-w-full">
                                 <thead>
                                     <tr className="bg-gray-200 text-start border-b border-gray-300">
                                         <th className="p-3 text-sm text-start font-bold border-gray-300 w-[20%]">TANGGAL</th>
