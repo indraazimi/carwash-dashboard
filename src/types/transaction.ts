@@ -39,6 +39,7 @@ export interface CreateTransactionRequest {
     vehicleType: string;
     serviceId: number;
     bookingTime?: string;
+    paymentMethod?: string;
 }
 
 export interface TransactionHistory {

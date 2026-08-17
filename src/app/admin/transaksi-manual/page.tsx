@@ -45,7 +45,8 @@ const TransaksiManualPage = () => {
         platNomor: "",
         jenisKendaraan: "",
         cc: "",
-        jenisLayanan: ""
+        jenisLayanan: "",
+        metodePembayaran: ""
     })
     const [recommendations, setRecommendations] = useState<any[]>([])
     const [isUserFound, setIsUserFound] = useState(false)
@@ -192,7 +193,8 @@ const TransaksiManualPage = () => {
                 plate: formData.platNomor,
                 vehicleType: formData.jenisKendaraan.toUpperCase(),
                 serviceId: Number(formData.jenisLayanan),
-                bookingTime: selectedSlotTime
+                bookingTime: selectedSlotTime,
+                paymentMethod: formData.metodePembayaran || undefined
             };
 
             const res = await createTransactionMutation.mutateAsync(payload);
@@ -205,7 +207,8 @@ const TransaksiManualPage = () => {
                 platNomor: "",
                 jenisKendaraan: "",
                 cc: "",
-                jenisLayanan: ""
+                jenisLayanan: "",
+                metodePembayaran: ""
             });
             setSelectedSlotTime("");
             setIsUserFound(false);
@@ -220,6 +223,11 @@ const TransaksiManualPage = () => {
     const dataJenisKendaraan = [
         { id: "mobil", name: "Mobil" },
         { id: "motor", name: "Motor" }
+    ]
+
+    const dataMetodePembayaran = [
+        { id: "TUNAI", name: "TUNAI" },
+        { id: "QRIS", name: "QRIS" }
     ]
 
     const dataLayananFormatted = (formData.jenisKendaraan && formData.cc)
@@ -349,6 +357,15 @@ const TransaksiManualPage = () => {
                                 )}
                             </div>
                         </div>
+                        <DropdownInput
+                            id="metodePembayaran"
+                            label="Metode Pembayaran"
+                            value={formData.metodePembayaran}
+                            onChange={handleChange}
+                            isRed={false}
+                            required
+                            data={dataMetodePembayaran}
+                        />
                         <hr className='text-gray-200' />
                         <div className='flex justify-between items-center'>
                             <h3 className="font-medium">Total Harga</h3>
