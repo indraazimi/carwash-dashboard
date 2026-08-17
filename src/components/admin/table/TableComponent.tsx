@@ -29,57 +29,86 @@ function TableComponent<T>({
 }: TableComponentProps<T>) {
     return (
         <div className={`w-full overflow-x-auto pb-2 ${className}`}>
-            <div className={`space-y-2 ${minWidth}`}>
+            <table className={`w-full text-left border-separate border-spacing-0 ${minWidth}`}>
                 {/* Table Header */}
-                <div className="flex items-end bg-white rounded-lg shadow-sm font-semibold text-gray-700 uppercase">
-                    {columns.map((col, idx) => (
-                        <div
-                            key={idx}
-                            className={`p-4 ${col.className || 'flex-1'} ${col.headerClassName || ''}`}
-                        >
-                            {col.header}
-                        </div>
-                    ))}
-                </div>
+                <thead>
+                    <tr className="bg-white shadow-sm text-gray-700 uppercase align-bottom">
+                        {columns.map((col, idx) => (
+                            <th
+                                key={idx}
+                                className={`p-4 font-medium align-bottom first:rounded-l-lg last:rounded-r-lg ${col.className || ''} ${col.headerClassName || ''}`}
+                            >
+                                {col.header}
+                            </th>
+                        ))}
+                    </tr>
+                    {/* Spacer between header and body */}
+                    <tr className="h-2 pointer-events-none select-none">
+                        <td colSpan={columns.length} className="p-0 h-2 bg-transparent border-0"></td>
+                    </tr>
+                </thead>
 
-                {/* Table Rows Container (Single unified card) */}
-                <div className="rounded-lg overflow-hidden shadow-sm bg-white">
+                {/* Table Body (Unified single card block) */}
+                <tbody>
                     {data.length > 0 ? (
                         data.map((row, idx) => {
                             const rowKey = keyExtractor
                                 ? keyExtractor(row, idx)
                                 : (row as any).id ?? (row as any).bookingNumber ?? idx;
 
+                            const isFirst = idx === 0;
+                            const isLast = idx === data.length - 1;
+
                             return (
-                                <div
+                                <tr
                                     key={rowKey}
                                     onClick={() => onRowClick?.(row)}
-                                    className={`flex items-center bg-white border-t first:border-t-0 border-gray-200 hover:bg-gray-50 transition-colors ${
+                                    className={`bg-white hover:bg-gray-50 transition-colors ${
                                         onRowClick ? 'cursor-pointer' : ''
                                     }`}
                                 >
-                                    {columns.map((col, colIdx) => (
-                                        <div
-                                            key={colIdx}
-                                            className={`p-4 ${col.className || 'flex-1'}`}
-                                        >
-                                            {col.render
-                                                ? col.render(row, idx)
-                                                : col.accessorKey
-                                                    ? String(row[col.accessorKey] ?? '')
-                                                    : null}
-                                        </div>
-                                    ))}
-                                </div>
+                                    {columns.map((col, colIdx) => {
+                                        const isFirstCol = colIdx === 0;
+                                        const isLastCol = colIdx === columns.length - 1;
+
+                                        // Apply rounded corners to outer edges of the body table block
+                                        const roundedTl = isFirst && isFirstCol ? 'rounded-tl-lg' : '';
+                                        const roundedTr = isFirst && isLastCol ? 'rounded-tr-lg' : '';
+                                        const roundedBl = isLast && isFirstCol ? 'rounded-bl-lg' : '';
+                                        const roundedBr = isLast && isLastCol ? 'rounded-br-lg' : '';
+                                        const roundedClasses = `${roundedTl} ${roundedTr} ${roundedBl} ${roundedBr}`.trim();
+
+                                        // Row separator border
+                                        const borderClass = !isFirst ? 'border-t border-gray-200' : '';
+
+                                        return (
+                                            <td
+                                                key={colIdx}
+                                                className={`p-4 ${roundedClasses} ${borderClass} ${col.className || ''}`}
+                                            >
+                                                {col.render
+                                                    ? col.render(row, idx)
+                                                    : col.accessorKey
+                                                        ? String(row[col.accessorKey] ?? '')
+                                                        : null}
+                                            </td>
+                                        );
+                                    })}
+                                </tr>
                             );
                         })
                     ) : (
-                        <div className="p-8 text-center text-gray-500">
-                            {emptyMessage}
-                        </div>
+                        <tr>
+                            <td
+                                colSpan={columns.length}
+                                className="p-8 text-center text-gray-500 bg-white rounded-lg shadow-sm"
+                            >
+                                {emptyMessage}
+                            </td>
+                        </tr>
                     )}
-                </div>
-            </div>
+                </tbody>
+            </table>
         </div>
     );
 }
