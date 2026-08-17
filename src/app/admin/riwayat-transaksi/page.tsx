@@ -122,6 +122,7 @@ const RiwayatTransaksiPage = () => {
         },
         {
             header: "TANGGAL & WAKTU",
+            className: "w-44",
             render: (transaction) => (
                 <div className="flex flex-col">
                     <span className="font-medium text-gray-900">
@@ -135,7 +136,7 @@ const RiwayatTransaksiPage = () => {
         },
         {
             header: "KENDARAAN",
-            className: "w-40",
+            className: "w-44",
             render: (transaction) => (
                 <div className="flex flex-col">
                     <span className="font-medium text-gray-900 uppercase">
@@ -149,6 +150,7 @@ const RiwayatTransaksiPage = () => {
         },
         {
             header: "CUSTOMER",
+            className: "w-48",
             render: (transaction) => (
                 <div className="flex flex-col">
                     <span className="font-medium text-gray-900">
@@ -162,6 +164,7 @@ const RiwayatTransaksiPage = () => {
         },
         {
             header: "LAYANAN",
+            className: "flex-1",
             render: (transaction) => (
                 <span className="font-medium text-gray-900">
                     {transaction.serviceName}
@@ -253,6 +256,7 @@ const RiwayatTransaksiPage = () => {
                 <TableComponent
                     columns={columns}
                     data={transactions}
+                    minWidth="min-w-[1100px]"
                     emptyMessage="Tidak ada riwayat transaksi pada periode ini"
                     keyExtractor={(item) => item.id}
                 />

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import StatsCard from "@/components/StatsCard";
 import TenantModal, { TenantFormData } from "@/components/TenantModal";
+import TableComponent, { TableColumn } from "@/components/admin/table/TableComponent";
 import {
   IconBuildingStore,
   IconCheck,
@@ -120,6 +121,74 @@ const ManagementTenantPage = () => {
     }
   };
 
+  const columns: TableColumn<Location>[] = [
+    {
+      header: "TENANT",
+      className: "flex-1",
+      render: (item) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">{item.name}</span>
+          <span className="text-gray-500 text-sm">{item.address}</span>
+        </div>
+      ),
+    },
+    {
+      header: "KONTAK",
+      className: "flex-1",
+      render: (item) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">{item.phone}</span>
+        </div>
+      ),
+    },
+    {
+      header: "STATUS",
+      className: "w-32 text-center",
+      render: (item) => (
+        <div className="flex justify-center">
+          <span
+            className={`px-3 py-1 rounded-full text-xs font-semibold ${
+              item.isActive
+                ? "bg-green-100 text-green-500 border border-green-500"
+                : "bg-red-100 text-red-500 border border-red-500"
+            }`}
+          >
+            {item.isActive ? "Aktif" : "Tidak Aktif"}
+          </span>
+        </div>
+      ),
+    },
+    {
+      header: "ADMIN",
+      className: "w-28 text-center",
+      render: (item) => (
+        <span className="text-gray-700 font-medium">{item.totalAdmin}</span>
+      ),
+    },
+    {
+      header: "AKSI",
+      className: "w-28 text-center",
+      render: (item) => (
+        <div className="flex justify-center gap-1">
+          <button
+            onClick={() => handleOpenEditModal(item)}
+            className="p-2 rounded-full hover:bg-blue-50 transition-all group cursor-pointer"
+            title="Edit Tenant"
+          >
+            <IconEdit size={16} className="text-blue-500 group-hover:scale-110 transition-transform" />
+          </button>
+          <button
+            onClick={() => handleDelete(item.id)}
+            className="p-2 rounded-full hover:bg-red-50 transition-all group cursor-pointer"
+            title="Hapus Tenant"
+          >
+            <IconTrash size={16} className="text-red-500 group-hover:scale-110 transition-transform" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   if (isLoading) {
     return <ManagementSkeleton />;
   }
@@ -144,7 +213,7 @@ const ManagementTenantPage = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatsCard
           label="Total Tenant"
           amount={data?.totalLocation || 0}
@@ -171,60 +240,12 @@ const ManagementTenantPage = () => {
         />
       </div>
 
-      <div className="space-y-2">
-        <div className="flex bg-white rounded-lg shadow-sm font-semibold text-gray-700">
-          <div className="p-4 flex-1">TENANT</div>
-          <div className="p-4 flex-1">KONTAK</div>
-          <div className="p-4 w-32 text-center">STATUS</div>
-          <div className="p-4 w-28 text-center">ADMIN</div>
-          <div className="p-4 w-28 text-center">AKSI</div>
-        </div>
-
-        <div className="rounded-lg overflow-hidden shadow-sm">
-          {locations.length > 0 ? (
-            locations.map((item) => (
-              <div key={item.id} className="flex items-center bg-white border-t border-gray-200 hover:bg-gray-50 transition-colors">
-                <div className="p-4 flex-1 flex flex-col">
-                  <span className="font-medium text-gray-900">{item.name}</span>
-                  <span className="text-gray-500 text-sm">{item.address}</span>
-                </div>
-                <div className="p-4 flex-1 flex flex-col">
-                  <span className="font-medium text-gray-900">{item.phone}</span>
-                </div>
-                <div className="p-4 w-32 flex justify-center">
-                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.isActive
-                    ? 'bg-green-100 text-green-500 border border-green-500'
-                    : 'bg-red-100 text-red-500 border border-red-500'
-                    }`}>
-                    {item.isActive ? 'Aktif' : 'Tidak Aktif'}
-                  </span>
-                </div>
-                <div className="p-4 w-28 text-center text-gray-700 font-medium">{item.totalAdmin}</div>
-                <div className="p-4 w-28 flex justify-center gap-1">
-                  <button
-                    onClick={() => handleOpenEditModal(item)}
-                    className="p-2 rounded-full hover:bg-blue-50 transition-all group cursor-pointer"
-                    title="Edit Tenant"
-                  >
-                    <IconEdit size={20} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item.id)}
-                    className="p-2 rounded-full hover:bg-red-50 transition-all group cursor-pointer"
-                    title="Hapus Tenant"
-                  >
-                    <IconTrash size={20} className="text-red-500 group-hover:scale-110 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="bg-white p-8 rounded-lg shadow-sm text-center text-gray-500">
-              Belum ada data tenant.
-            </div>
-          )}
-        </div>
-      </div>
+      <TableComponent
+        columns={columns}
+        data={locations}
+        emptyMessage="Belum ada data tenant."
+        keyExtractor={(item) => item.id}
+      />
 
       {/* Tenant Modal (Add/Edit) */}
       <TenantModal

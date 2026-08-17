@@ -32,65 +32,65 @@ const AdminDashboardPage = () => {
   }));
 
   return (
-    <div className="space-y-6">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <StatsCard
-          label="Pendapatan Hari Ini"
-          amount={`Rp ${stats.todayRevenue.toLocaleString('id-ID')}`}
-          change={0}
-          isChange={false}
-          icon={<IconCoin />}
-        />
-        <StatsCard
-          label="Kendaraan Dicuci"
-          amount={stats.totalWashedToday}
-          change={0}
-          isChange={false}
-          icon={<IconCar />}
-        />
-        <StatsCard
-          label="Antrian Aktif"
-          amount={stats.activeQueue}
-          isChange={false}
-          icon={<IconClockHour3 />}
+      <StatsCard
+        label="Pendapatan Hari Ini"
+        amount={`Rp ${stats.todayRevenue.toLocaleString('id-ID')}`}
+        change={0}
+        isChange={false}
+        icon={<IconCoin />}
+      />
+      <StatsCard
+        label="Kendaraan Dicuci"
+        amount={stats.totalWashedToday}
+        change={0}
+        isChange={false}
+        icon={<IconCar />}
+      />
+      <StatsCard
+        label="Antrian Aktif"
+        amount={stats.activeQueue}
+        isChange={false}
+        icon={<IconClockHour3 />}
+      />
+
+      {/* Line Area Chart */}
+      <div className="lg:col-span-3">
+        <LineAreaChart
+          data={transactionData}
+          title={`Pendapatan Minggu Ini`}
+          height={350}
         />
       </div>
 
-      {/* Line Area Chart */}
-      <LineAreaChart
-        data={transactionData}
-        title={`Pendapatan Minggu Ini`}
-        height={350}
-      />
-
-      <div className="flex gap-4 w-full h-fit">
-        {/* Bar Chart */}
+      {/* Bar Chart */}
+      <div className="lg:col-span-3 xl:col-span-2">
         <BarChart
           data={pencucianData}
           title="Pencucian Hari Ini"
-          height={350}
         />
-        {/* Queue List */}
-        <div className="w-full bg-white p-5 rounded-lg shadow-sm">
-          <h3 className="text-lg font-semibold">Antrian Kendaraan</h3>
-          <div className="space-y-2 mt-6">
-            {stats.todayQueue.length > 0 ? (
-              stats.todayQueue.map((item) => (
-                <VehicleStatusCard
-                  key={item.bookingNumber}
-                  data={{
-                    plat: item.plate,
-                    kategori: item.type,
-                    jamBooking: item.queue_time,
-                    status: item.status
-                  }}
-                />
-              ))
-            ) : (
-              <div className="text-center text-gray-500 py-4">Tidak ada antrian</div>
-            )}
-          </div>
+      </div>
+
+      {/* Queue List */}
+      <div className="w-full bg-white p-5 rounded-lg shadow-sm lg:col-span-3 xl:col-span-1">
+        <h3 className="text-lg font-semibold">Antrian Kendaraan</h3>
+        <div className="space-y-2 mt-6">
+          {stats.todayQueue.length > 0 ? (
+            stats.todayQueue.map((item) => (
+              <VehicleStatusCard
+                key={item.bookingNumber}
+                data={{
+                  plat: item.plate,
+                  kategori: item.type,
+                  jamBooking: item.queue_time,
+                  status: item.status
+                }}
+              />
+            ))
+          ) : (
+            <div className="text-center text-gray-500 py-4">Tidak ada antrian</div>
+          )}
         </div>
       </div>
     </div>

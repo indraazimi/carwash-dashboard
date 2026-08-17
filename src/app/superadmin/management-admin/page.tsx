@@ -3,8 +3,8 @@
 import { useState } from "react";
 import StatsCard from "@/components/StatsCard";
 import AdminModal, { AdminFormData } from "@/components/AdminModal";
+import TableComponent, { TableColumn } from "@/components/admin/table/TableComponent";
 import {
-  IconBuildingStore,
   IconCheck,
   IconEdit,
   IconLogin,
@@ -20,7 +20,7 @@ import { useToast } from "@/hooks/useToast";
 import Toast from "@/components/Toast";
 import ErrorView from "@/components/ErrorView";
 import { Admin } from "@/types/admin";
-import { getDate, formatDateTime } from "@/utils/getDate";
+import { formatDateTime } from "@/utils/getDate";
 import ManagementSkeleton from "@/components/skeleton/ManagementSkeleton";
 import ButtonComponent from "@/components/buttons/ButtonComponent";
 
@@ -120,6 +120,84 @@ const ManagementAdminPage = () => {
     }
   };
 
+  const columns: TableColumn<Admin>[] = [
+    {
+      header: "ADMIN",
+      className: "flex-1",
+      render: (admin) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">{admin.name}</span>
+          <span className="text-gray-500 text-sm">{admin.username}</span>
+        </div>
+      ),
+    },
+    {
+      header: "KONTAK",
+      className: "flex-1",
+      render: (admin) => (
+        <div className="flex flex-col">
+          <span className="font-medium text-gray-900">{admin.phone}</span>
+          <span className="text-gray-500 text-sm">{admin.email}</span>
+        </div>
+      ),
+    },
+    {
+      header: "TENANT",
+      className: "flex-1",
+      render: (admin) => (
+        <span className="font-medium text-gray-900">{admin.location}</span>
+      ),
+    },
+    {
+      header: "STATUS",
+      className: "w-32 text-center",
+      render: (admin) => (
+        <div className="flex justify-center">
+          <span
+            className={`px-2 py-1 rounded-full text-xs border font-medium ${
+              admin.isActive
+                ? "bg-green-100 text-green-500 border border-green-500"
+                : "bg-red-100 text-red-500 border border-red-500"
+            }`}
+          >
+            {admin.isActive ? "Aktif" : "Tidak Aktif"}
+          </span>
+        </div>
+      ),
+    },
+    {
+      header: "LOGIN TERAKHIR",
+      className: "w-52 text-center",
+      render: (admin) => (
+        <span className="text-gray-700">
+          {admin.lastLogin ? formatDateTime(admin.lastLogin) : "Belum pernah login"}
+        </span>
+      ),
+    },
+    {
+      header: "AKSI",
+      className: "w-28 text-center",
+      render: (admin) => (
+        <div className="flex justify-center gap-1">
+          <button
+            onClick={() => handleOpenEditModal(admin)}
+            className="p-2 rounded-full hover:bg-blue-50 transition-all group cursor-pointer"
+            title="Edit Admin"
+          >
+            <IconEdit size={16} className="text-blue-500 group-hover:scale-110 transition-transform" />
+          </button>
+          <button
+            onClick={() => handleDelete(admin.id)}
+            className="p-2 rounded-full hover:bg-red-50 transition-all group cursor-pointer"
+            title="Hapus Admin"
+          >
+            <IconTrash size={16} className="text-red-500 group-hover:scale-110 transition-transform" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   if (isLoading) {
     return <ManagementSkeleton />;
   }
@@ -148,7 +226,7 @@ const ManagementAdminPage = () => {
         />
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <StatsCard
           label="Total Admin"
           amount={data?.totalAdmin || 0}
@@ -175,64 +253,12 @@ const ManagementAdminPage = () => {
         />
       </div>
 
-      <div className="space-y-2">
-        <div className="flex bg-white rounded-lg shadow-sm font-semibold text-gray-700">
-          <div className="p-4 flex-1">ADMIN</div>
-          <div className="p-4 flex-1">KONTAK</div>
-          <div className="p-4 flex-1">TENANT</div>
-          <div className="p-4 w-32 text-center">STATUS</div>
-          <div className="p-4 w-52 text-center">LOGIN TERAKHIR</div>
-          <div className="p-4 w-28 text-center">AKSI</div>
-        </div>
-
-        <div className="rounded-lg overflow-hidden shadow-sm">
-          {admins.length > 0 ? (
-            admins.map((admin) => (
-              <div key={admin.id} className="flex items-center bg-white border-t border-gray-200 hover:bg-gray-50 transition-colors">
-                <div className="p-4 flex-1 flex flex-col">
-                  <span className="font-medium text-gray-900">{admin.name}</span>
-                  <span className="text-gray-500 text-sm">{admin.username}</span>
-                </div>
-                <div className="p-4 flex-1 flex flex-col">
-                  <span className="font-medium text-gray-900">{admin.phone}</span>
-                  <span className="text-gray-500 text-sm">{admin.email}</span>
-                </div>
-                <div className="p-4 flex-1">
-                  {admin.location}
-                </div>
-                <div className="p-4 w-32 flex justify-center">
-                  <span className={`px-2 py-1 rounded-full text-xs border font-medium ${admin.isActive ? 'bg-green-100 text-green-500 border border-green-500' : 'bg-red-100 text-red-500 border border-red-500'}`}>
-                    {admin.isActive ? 'Aktif' : 'Tidak Aktif'}
-                  </span>
-                </div>
-                <div className="p-4 w-52 text-center">
-                  {admin.lastLogin ? formatDateTime(admin.lastLogin) : 'Belum pernah login'}
-                </div>
-                <div className="p-4 w-28 flex justify-center gap-1">
-                  <button
-                    onClick={() => handleOpenEditModal(admin)}
-                    className="p-2 rounded-full hover:bg-blue-50 transition-all group cursor-pointer"
-                    title="Edit Admin"
-                  >
-                    <IconEdit size={20} className="text-blue-500 group-hover:scale-110 transition-transform" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(admin.id)}
-                    className="p-2 rounded-full hover:bg-red-50 transition-all group  cursor-pointer"
-                    title="Hapus Admin"
-                  >
-                    <IconTrash size={20} className="text-red-500 group-hover:scale-110 transition-transform" />
-                  </button>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="bg-white p-8 rounded-lg shadow-sm text-center text-gray-500">
-              Belum ada data admin.
-            </div>
-          )}
-        </div>
-      </div>
+      <TableComponent
+        columns={columns}
+        data={admins}
+        emptyMessage="Belum ada data admin."
+        keyExtractor={(item) => item.id}
+      />
 
       {/* Admin Modal (Add/Edit) */}
       <AdminModal
@@ -253,4 +279,3 @@ const ManagementAdminPage = () => {
 };
 
 export default ManagementAdminPage;
-

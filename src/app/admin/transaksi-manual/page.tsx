@@ -245,7 +245,7 @@ const TransaksiManualPage = () => {
             <div className="flex justify-between items-center">
                 <h3 className="font-semibold text-lg">Transaksi Manual</h3>
             </div>
-            <div className='flex gap-4'>
+            <div className='grid grid-cols-1 gap-4 lg:grid-cols-2'>
                 <div className='bg-white p-5 flex-1 rounded-lg shadow-sm'>
                     <h3 className='font-semibold text-lg'>Informasi Transaksi</h3>
                     <form onSubmit={handleSubmit} className='mt-6 space-y-4'>
@@ -382,7 +382,7 @@ const TransaksiManualPage = () => {
                         />
                     </form>
                 </div>
-                <div className='bg-white p-5 flex-1 rounded-lg shadow-sm'>
+                <div className='bg-white p-5 rounded-lg shadow-sm h-fit'>
                     <h3 className='font-semibold text-lg mb-6'>Daftar Harga Layanan</h3>
                     <div className='space-y-3'>
                         {dataLayanan.map((l) => {

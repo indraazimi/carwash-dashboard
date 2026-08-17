@@ -75,7 +75,7 @@ const TransactionPage = () => {
     },
     {
       header: "KENDARAAN",
-      className: "w-40",
+      className: "w-44",
       render: (transaction) => (
         <div className="flex flex-col">
           <span className="font-medium text-gray-900 uppercase">{transaction.vehiclePlate}</span>
@@ -85,6 +85,7 @@ const TransactionPage = () => {
     },
     {
       header: "CUSTOMER",
+      className: "w-48",
       render: (transaction) => (
         <div className="flex flex-col">
           <span className="font-medium text-gray-900">{transaction.customerName}</span>
@@ -94,6 +95,7 @@ const TransactionPage = () => {
     },
     {
       header: "LAYANAN",
+      className: "flex-1",
       render: (transaction) => (
         <div className="flex flex-col">
           <span className="font-medium text-gray-900">{transaction.serviceName}</span>
@@ -103,6 +105,7 @@ const TransactionPage = () => {
     },
     {
       header: "WAKTU",
+      className: "w-48",
       render: (transaction) => (
         <div className="flex flex-col">
           <span className="font-medium text-gray-900">{formatTime(transaction.bookingTime)}</span>
@@ -119,7 +122,7 @@ const TransactionPage = () => {
     },
     {
       header: "STATUS",
-      className: "w-40 text-center",
+      className: "w-36 text-center",
       render: (transaction) => (
         <div className="flex justify-center">
           <VehicleStatus status={transaction.status} />
@@ -164,6 +167,7 @@ const TransactionPage = () => {
       <TableComponent
         columns={columns}
         data={transactions}
+        minWidth="min-w-[1300px]"
         emptyMessage="Tidak ada transaksi"
         keyExtractor={(item) => item.bookingNumber}
       />
