@@ -29,20 +29,21 @@ function TableComponent<T>({
 }: TableComponentProps<T>) {
     return (
         <div className={`w-full overflow-x-auto pb-2 ${className}`}>
-            <table className={`w-full text-left border-separate border-spacing-y-2 ${minWidth}`}>
-                <thead>
-                    <tr className="bg-white rounded-lg shadow-sm">
-                        {columns.map((col, idx) => (
-                            <th
-                                key={idx}
-                                className={`p-4 font-semibold text-gray-700 uppercase first:rounded-l-lg last:rounded-r-lg ${col.className || ''} ${col.headerClassName || ''}`}
-                            >
-                                {col.header}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
+            <div className={`space-y-2 ${minWidth}`}>
+                {/* Table Header */}
+                <div className="flex items-end bg-white rounded-lg shadow-sm font-semibold text-gray-700 uppercase">
+                    {columns.map((col, idx) => (
+                        <div
+                            key={idx}
+                            className={`p-4 ${col.className || 'flex-1'} ${col.headerClassName || ''}`}
+                        >
+                            {col.header}
+                        </div>
+                    ))}
+                </div>
+
+                {/* Table Rows Container (Single unified card) */}
+                <div className="rounded-lg overflow-hidden shadow-sm bg-white">
                     {data.length > 0 ? (
                         data.map((row, idx) => {
                             const rowKey = keyExtractor
@@ -50,40 +51,35 @@ function TableComponent<T>({
                                 : (row as any).id ?? (row as any).bookingNumber ?? idx;
 
                             return (
-                                <tr
+                                <div
                                     key={rowKey}
                                     onClick={() => onRowClick?.(row)}
-                                    className={`bg-white shadow-sm hover:bg-gray-50 transition-colors ${
+                                    className={`flex items-center bg-white border-t first:border-t-0 border-gray-200 hover:bg-gray-50 transition-colors ${
                                         onRowClick ? 'cursor-pointer' : ''
                                     }`}
                                 >
                                     {columns.map((col, colIdx) => (
-                                        <td
+                                        <div
                                             key={colIdx}
-                                            className={`p-4 first:rounded-l-lg last:rounded-r-lg border-y first:border-l last:border-r border-transparent ${col.className || ''}`}
+                                            className={`p-4 ${col.className || 'flex-1'}`}
                                         >
                                             {col.render
                                                 ? col.render(row, idx)
                                                 : col.accessorKey
                                                     ? String(row[col.accessorKey] ?? '')
                                                     : null}
-                                        </td>
+                                        </div>
                                     ))}
-                                </tr>
+                                </div>
                             );
                         })
                     ) : (
-                        <tr>
-                            <td
-                                colSpan={columns.length}
-                                className="bg-white p-6 rounded-lg shadow-sm text-center text-gray-500"
-                            >
-                                {emptyMessage}
-                            </td>
-                        </tr>
+                        <div className="p-8 text-center text-gray-500">
+                            {emptyMessage}
+                        </div>
                     )}
-                </tbody>
-            </table>
+                </div>
+            </div>
         </div>
     );
 }
