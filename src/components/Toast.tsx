@@ -31,20 +31,20 @@ export const ToastItem = ({ message, type, onClose, duration = 5000 }: ToastItem
     };
 
     const styles = {
-        success: "bg-green-50 border-green-500 text-green-500",
-        error: "bg-red-50 border-red-500 text-red-500",
-        info: "bg-blue-50 border-blue-500 text-blue-500",
+        success: "bg-emerald-500 text-white",
+        error: "bg-red-500 text-white",
+        info: "bg-blue-500 text-white",
     };
 
     const icons = {
-        success: <IconCheck className="w-5 h-5 text-green-500" />,
-        error: <IconAlertCircle className="w-5 h-5 text-red-500" />,
-        info: <IconInfoCircle className="w-5 h-5 text-blue-500" />,
+        success: <IconCheck className="w-5 h-5 text-white" />,
+        error: <IconAlertCircle className="w-5 h-5 text-white" />,
+        info: <IconInfoCircle className="w-5 h-5 text-white" />,
     };
 
     return (
         <div className={`animate-in ${isExiting ? 'animate-toast-out' : 'animate-toast-in'}`}>
-            <div className={`flex items-center gap-3 p-4 rounded-xl border max-w-md shadow-lg ${styles[type]}`}>
+            <div className={`flex items-center gap-3 p-4 rounded-xl max-w-md shadow-lg ${styles[type]}`}>
                 <div className="shrink-0">
                     {icons[type]}
                 </div>

@@ -113,6 +113,8 @@ const TransactionPage = () => {
     {
       header: "WAKTU",
       className: "w-48",
+      sortable: true,
+      sortKey: "bookingTime",
       render: (transaction) => (
         <div className="flex flex-col">
           <span className="font-medium text-gray-900">{formatTime(transaction.bookingTime)}</span>
@@ -123,6 +125,8 @@ const TransactionPage = () => {
     {
       header: "PEMBAYARAN",
       className: "w-36 text-center",
+      sortable: true,
+      sortKey: "paymentMethod",
       render: (transaction) => (
         <span className="font-medium text-gray-800">{transaction.paymentMethod || "-"}</span>
       ),
@@ -130,6 +134,8 @@ const TransactionPage = () => {
     {
       header: "STATUS",
       className: "w-36 text-center",
+      sortable: true,
+      sortKey: "status",
       render: (transaction) => (
         <div className="flex justify-center">
           <VehicleStatus status={transaction.status} />
@@ -139,6 +145,7 @@ const TransactionPage = () => {
     {
       header: "AKSI",
       className: "w-44 text-center",
+      sortable: false,
       render: (transaction) => (
         <div className="flex justify-center">
           <ButtonComponent
@@ -177,6 +184,8 @@ const TransactionPage = () => {
         minWidth="min-w-[1300px]"
         emptyMessage="Tidak ada transaksi"
         keyExtractor={(item) => item.bookingNumber}
+        searchable={true}
+        searchPlaceholder="Cari transaksi..."
         pagination={true}
         pageSize={pagination?.itemsPerPage || pageSize}
         currentPage={pagination?.currentPage || page}

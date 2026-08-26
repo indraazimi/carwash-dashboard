@@ -243,7 +243,7 @@ const RiwayatTransaksiPage = () => {
                     </div>
                     <div className='p-4 flex items-center justify-between w-full'>
                         <div>
-                            Pilih Semua ({selectedIds.length} dipilih)
+                            Pilih Semua {selectedIds.length > 0 && `(${selectedIds.length} dipilih)`}
                         </div>
                         <ButtonComponent
                             isPrimary={true}
@@ -265,6 +265,8 @@ const RiwayatTransaksiPage = () => {
                     minWidth="min-w-[1100px]"
                     emptyMessage="Tidak ada riwayat transaksi pada periode ini"
                     keyExtractor={(item) => item.id}
+                    searchable={true}
+                    searchPlaceholder="Cari riwayat transaksi..."
                     pagination={true}
                     pageSize={pagination?.itemsPerPage || pageSize}
                     currentPage={pagination?.currentPage || page}
