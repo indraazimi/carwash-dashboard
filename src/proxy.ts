@@ -8,10 +8,15 @@ const roleBasedRoutes = {
 };
 
 // Route yang bisa diakses tanpa login
-const publicRoutes = ['/login'];
+const publicRoutes = ['/login', '/lacak'];
 
 export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
+
+    // Rute publik /lacak dapat diakses langsung tanpa login dan tidak di-redirect ke apapun
+    if (pathname === '/lacak' || pathname.startsWith('/lacak/')) {
+        return NextResponse.next();
+    }
 
     // Ambil token dan user dari cookie atau localStorage (via header)
     const token = request.cookies.get('token')?.value;
@@ -51,20 +56,10 @@ export function proxy(request: NextRequest) {
         const userRole = user.role as keyof typeof roleBasedRoutes;
         const allowedRoutes = roleBasedRoutes[userRole] || [];
 
-        // console.log('🔍 Middleware Debug:', {
-        //     pathname,
-        //     userRole,
-        //     allowedRoutes,
-        //     user: user
-        // });
-
         // Cek apakah user mencoba akses route yang tidak sesuai dengan rolenya
         const hasAccess = allowedRoutes.some(route => pathname.startsWith(route));
 
-        // console.log('✅ Has Access:', hasAccess);
-
         if (!hasAccess) {
-            // console.log('❌ Access Denied! Redirecting...');
             // Redirect ke dashboard sesuai role mereka
             if (userRole === 'SUPERADMIN') {
                 return NextResponse.redirect(new URL('/superadmin/dashboard', request.url));
@@ -77,7 +72,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
 }
 
-// Konfigurasi matcher untuk route yang akan di-check oleh middleware
+// Konfigurasi matcher untuk route yang akan di-check oleh middleware/proxy
 export const config = {
     matcher: [
         /*
@@ -88,6 +83,6 @@ export const config = {
          * - favicon.ico (favicon file)
          * - public files (images, etc)
          */
-        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.svg).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)',
     ],
 };

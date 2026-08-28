@@ -23,6 +23,17 @@ export const useUpdateTransactionStatus = () => {
     });
 };
 
+export const useUpdatePaymentMethod = () => {
+    const queryClient = useQueryClient();
+    return useMutation<TransactionResponse, Error, { id: number; paymentMethod: string }>({
+        mutationFn: (data) =>
+            transactionService.updatePaymentMethod(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['transactions'] });
+        },
+    });
+};
+
 export const useCreateTransaction = () => {
     const queryClient = useQueryClient();
     return useMutation<any, Error, CreateTransactionRequest>({

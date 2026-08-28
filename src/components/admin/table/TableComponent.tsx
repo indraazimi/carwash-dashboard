@@ -69,7 +69,7 @@ function TableComponent<T>({
     onPageChange,
     totalItems,
     searchable = false,
-    searchPlaceholder = "Cari data...",
+    searchPlaceholder = "Cari data",
     searchValue,
     onSearch,
     debounceDelay = 500,

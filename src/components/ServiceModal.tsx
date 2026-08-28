@@ -76,6 +76,17 @@ const ServiceModal = ({
     }));
   };
 
+  const handleNumericChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    const numericValue = value.replace(/\D/g, "");
+    setFormData((prev) => ({
+      ...prev,
+      [name]: numericValue,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -149,14 +160,16 @@ const ServiceModal = ({
             value={formData.description}
             onChange={handleChange}
             isRed={false}
-            required={true}
+            required={false}
           />
 
           <TextInput
             id="price"
             label="Harga (Rp)"
             value={formData.price}
-            onChange={handleChange}
+            onChange={handleNumericChange}
+            inputMode="numeric"
+            pattern="[0-9]*"
             isRed={false}
             required={true}
           />
@@ -175,8 +188,11 @@ const ServiceModal = ({
             <TextInput
               id="minCc"
               label="Min CC (Opsional)"
+              placeholder="Masukkan Min CC"
               value={formData.minCc}
-              onChange={handleChange}
+              onChange={handleNumericChange}
+              inputMode="numeric"
+              pattern="[0-9]*"
               isRed={false}
               required={false}
             />
@@ -184,8 +200,11 @@ const ServiceModal = ({
             <TextInput
               id="maxCc"
               label="Max CC (Opsional)"
+              placeholder="Masukkan Max CC"
               value={formData.maxCc}
-              onChange={handleChange}
+              onChange={handleNumericChange}
+              inputMode="numeric"
+              pattern="[0-9]*"
               isRed={false}
               required={false}
             />

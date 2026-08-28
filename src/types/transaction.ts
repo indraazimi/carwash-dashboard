@@ -62,6 +62,7 @@ export interface TransactionHistory {
     serviceName: string;
     servicePrice: number;
     status: string;
+    paymentMethod?: string | null;
 }
 
 export interface TransactionHistoryResponse {

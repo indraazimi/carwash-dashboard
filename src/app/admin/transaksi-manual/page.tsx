@@ -46,7 +46,7 @@ const TransaksiManualPage = () => {
         jenisKendaraan: "",
         cc: "",
         jenisLayanan: "",
-        metodePembayaran: ""
+        // metodePembayaran: ""
     })
     const [recommendations, setRecommendations] = useState<any[]>([])
     const [isUserFound, setIsUserFound] = useState(false)
@@ -194,7 +194,7 @@ const TransaksiManualPage = () => {
                 vehicleType: formData.jenisKendaraan.toUpperCase(),
                 serviceId: Number(formData.jenisLayanan),
                 bookingTime: selectedSlotTime,
-                paymentMethod: formData.metodePembayaran || undefined
+                // paymentMethod: formData.metodePembayaran || undefined
             };
 
             const res = await createTransactionMutation.mutateAsync(payload);
@@ -208,7 +208,7 @@ const TransaksiManualPage = () => {
                 jenisKendaraan: "",
                 cc: "",
                 jenisLayanan: "",
-                metodePembayaran: ""
+                // metodePembayaran: ""
             });
             setSelectedSlotTime("");
             setIsUserFound(false);
@@ -225,10 +225,10 @@ const TransaksiManualPage = () => {
         { id: "motor", name: "Motor" }
     ]
 
-    const dataMetodePembayaran = [
-        { id: "TUNAI", name: "TUNAI" },
-        { id: "QRIS", name: "QRIS" }
-    ]
+    // const dataMetodePembayaran = [
+    //     { id: "TUNAI", name: "TUNAI" },
+    //     { id: "QRIS", name: "QRIS" }
+    // ]
 
     const dataLayananFormatted = (formData.jenisKendaraan && formData.cc)
         ? (filteredServices || []).map((l: any) => ({
@@ -357,7 +357,7 @@ const TransaksiManualPage = () => {
                                 )}
                             </div>
                         </div>
-                        <DropdownInput
+                        {/* <DropdownInput
                             id="metodePembayaran"
                             label="Metode Pembayaran"
                             value={formData.metodePembayaran}
@@ -365,7 +365,7 @@ const TransaksiManualPage = () => {
                             isRed={false}
                             required
                             data={dataMetodePembayaran}
-                        />
+                        /> */}
                         <hr className='text-gray-200' />
                         <div className='flex justify-between items-center'>
                             <h3 className="font-medium">Total Harga</h3>

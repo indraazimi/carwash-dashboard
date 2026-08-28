@@ -17,6 +17,10 @@ export const transactionService = {
         const response = await apiClient.patch<TransactionResponse>(`/transactions/${id}/status`, { status });
         return response.data;
     },
+    updatePaymentMethod: async ({ id, paymentMethod }: { id: number; paymentMethod: string }): Promise<TransactionResponse> => {
+        const response = await apiClient.patch<TransactionResponse>(`/transactions/${id}/payment-method`, { paymentMethod });
+        return response.data;
+    },
     createTransaction: async (data: CreateTransactionRequest): Promise<any> => {
         const response = await apiClient.post('/transactions', data);
         return response.data;

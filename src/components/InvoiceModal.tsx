@@ -3,7 +3,7 @@
 import { IconDownload, IconPrinter, IconX } from "@tabler/icons-react";
 import Image from "next/image";
 import { TransactionHistory } from "@/types/transaction";
-import { formatOnlyDate } from "@/utils/getDate";
+import { formatOnlyDate, formatTimeDot } from "@/utils/getDate";
 import { useEffect, useState } from "react";
 import { transactionService } from "@/services/transactionService";
 import { useToast } from "@/hooks/useToast";
@@ -102,22 +102,28 @@ const InvoiceModal = ({ isOpen, onClose, transactions }: InvoiceModalProps) => {
                             <table className="w-full border-collapse min-w-[600px] print:min-w-full">
                                 <thead>
                                     <tr className="bg-gray-200 text-start border-b border-gray-300">
-                                        <th className="p-3 text-sm text-start font-bold border-gray-300 w-[20%]">TANGGAL</th>
-                                        <th className="p-3 text-sm text-start font-bold border-gray-300 w-[20%]">CUSTOMER</th>
-                                        <th className="p-3 text-sm text-start font-bold border-gray-300 w-[20%]">KENDARAAN</th>
-                                        <th className="p-3 text-sm text-start font-bold border-gray-300 w-[25%]">LAYANAN</th>
-                                        <th className="p-3 text-sm font-bold w-[15%]">HARGA</th>
+                                        <th className="p-3 text-sm text-start font-bold border-gray-300 w-[18%]">TANGGAL</th>
+                                        <th className="p-3 text-sm text-start font-bold border-gray-300 w-[18%]">CUSTOMER</th>
+                                        <th className="p-3 text-sm text-start font-bold border-gray-300 w-[18%]">KENDARAAN</th>
+                                        <th className="p-3 text-sm text-start font-bold border-gray-300 w-[20%]">LAYANAN</th>
+                                        <th className="p-3 text-sm text-center font-bold border-gray-300 w-[13%]">PEMBAYARAN</th>
+                                        <th className="p-3 text-sm font-bold w-[13%]">HARGA</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {transactions.map((t, idx) => (
                                         <tr key={idx} className={`border-b border-gray-300 last:border-0 transition-colors ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-100'}`}>
-                                            <td className="p-3 text-sm border-gray-300">{formatOnlyDate(t.date)}</td>
-                                            <td className="p-3 text-sm border-gray-300">{t.customerName}</td>
-                                            <td className="p-3 text-sm border-gray-300">
-                                                {t.vehiclePlate} ({t.vehicleType.charAt(0).toUpperCase() + t.vehicleType.slice(1).toLowerCase()})
+                                            <td className="p-3 text-sm">
+                                                <div>{formatOnlyDate(t.date)}</div>
+                                                <div className="text-gray-500 text-xs">{formatTimeDot(t.date)}</div>
                                             </td>
-                                            <td className="p-3 text-sm border-gray-300">{t.serviceName}</td>
+                                            <td className="p-3 text-sm">{t.customerName}</td>
+                                            <td className="p-3 text-sm">
+                                                <div>{t.vehiclePlate}</div>
+                                                <div className="text-gray-500 text-xs capitalize">{t.vehicleType.toLowerCase()}</div>
+                                            </td>
+                                            <td className="p-3 text-sm">{t.serviceName}</td>
+                                            <td className="p-3 text-center text-sm">{t.paymentMethod || "-"}</td>
                                             <td className="p-3 text-center text-sm">Rp {t.servicePrice.toLocaleString('id-ID')}</td>
                                         </tr>
                                     ))}

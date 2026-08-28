@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { IconEdit } from "@tabler/icons-react";
-import { useTransactions, useUpdateTransactionStatus } from "@/hooks/useTransactions";
+import { useTransactions, useUpdateTransactionStatus, useUpdatePaymentMethod } from "@/hooks/useTransactions";
 import { formatTime } from "@/utils/getDate";
 import { Transaction } from "@/types/transaction";
 import TransactionStatusModal from "@/components/TransactionStatusModal";
@@ -40,6 +40,7 @@ const TransactionPage = () => {
   }, [refetch]);
 
   const updateStatusMutation = useUpdateTransactionStatus();
+  const updatePaymentMethodMutation = useUpdatePaymentMethod();
 
   const transactions = response?.data?.transactions || [];
   const pagination = response?.pagination;
@@ -69,6 +70,20 @@ const TransactionPage = () => {
     } catch (error: any) {
       console.error("Failed to update status:", error);
       showToast(error.response?.data?.message || "Gagal memperbarui status", "error");
+      throw error;
+    }
+  };
+
+  const handleUpdatePaymentMethod = async (id: number, paymentMethod: string) => {
+    try {
+      const res = await updatePaymentMethodMutation.mutateAsync({ id, paymentMethod });
+      showToast(res.message || "Metode pembayaran berhasil diperbarui", "success");
+      // Update selectedTransaction payment method locally in modal
+      setSelectedTransaction((prev) => prev ? { ...prev, paymentMethod } : null);
+    } catch (error: any) {
+      console.error("Failed to update payment method:", error);
+      showToast(error.response?.data?.message || "Gagal memperbarui metode pembayaran", "error");
+      throw error;
     }
   };
 
@@ -185,7 +200,7 @@ const TransactionPage = () => {
         emptyMessage="Tidak ada transaksi"
         keyExtractor={(item) => item.bookingNumber}
         searchable={true}
-        searchPlaceholder="Cari transaksi..."
+        searchPlaceholder="Cari transaksi"
         pagination={true}
         pageSize={pagination?.itemsPerPage || pageSize}
         currentPage={pagination?.currentPage || page}
@@ -198,6 +213,7 @@ const TransactionPage = () => {
         isOpen={isStatusModalOpen}
         onClose={() => setIsStatusModalOpen(false)}
         onSubmit={handleUpdateStatus}
+        onUpdatePaymentMethod={handleUpdatePaymentMethod}
         transaction={selectedTransaction}
       />
 

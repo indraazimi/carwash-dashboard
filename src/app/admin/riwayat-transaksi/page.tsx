@@ -266,7 +266,7 @@ const RiwayatTransaksiPage = () => {
                     emptyMessage="Tidak ada riwayat transaksi pada periode ini"
                     keyExtractor={(item) => item.id}
                     searchable={true}
-                    searchPlaceholder="Cari riwayat transaksi..."
+                    searchPlaceholder="Cari riwayat transaksi"
                     pagination={true}
                     pageSize={pagination?.itemsPerPage || pageSize}
                     currentPage={pagination?.currentPage || page}

@@ -8,6 +8,7 @@ import {
   IconHistory,
   IconSquarePlus,
   IconReceipt,
+  IconStar,
   IconTools,
   IconX,
 } from "@tabler/icons-react";
@@ -45,6 +46,11 @@ const AdminSidebar = ({ isOpen = false, onClose }: AdminSidebarProps) => {
       href: "/admin/manajemen-layanan",
       label: "Manajemen Layanan",
       icon: IconTools,
+    },
+    {
+      href: "/admin/ulasan",
+      label: "Daftar Ulasan",
+      icon: IconStar,
     },
   ];
 
